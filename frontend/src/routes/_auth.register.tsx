@@ -1,9 +1,9 @@
-import { registerSchema } from "@/schemas"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { registerSchema } from '@/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,26 +12,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 import { createFileRoute, Link } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/register')({
+export const Route = createFileRoute('/_auth/register')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
   })
 
@@ -44,7 +49,9 @@ function RouteComponent() {
       <Card>
         <CardHeader className="text-center">
           <CardTitle>Sign up</CardTitle>
-          <CardDescription>Sign up now to manage gym related operations!</CardDescription>
+          <CardDescription>
+            Sign up now to manage gym related operations!
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -57,16 +64,14 @@ function RouteComponent() {
                     <FormItem>
                       <FormLabel>First Name</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Enter your first name"
-                        />
+                        <Input {...field} placeholder="Enter your first name" />
                       </FormControl>
-                      <FormMessage className="text-xs">{form.formState.errors.firstName?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {form.formState.errors.firstName?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
-                >
-                </FormField>
+                ></FormField>
                 <FormField
                   control={form.control}
                   name="lastName"
@@ -74,16 +79,14 @@ function RouteComponent() {
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Enter your first name"
-                        />
+                        <Input {...field} placeholder="Enter your first name" />
                       </FormControl>
-                      <FormMessage className="text-xs">{form.formState.errors.lastName?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {form.formState.errors.lastName?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
-                >
-                </FormField>
+                ></FormField>
               </div>
               <FormField
                 control={form.control}
@@ -92,16 +95,14 @@ function RouteComponent() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter your email"
-                      />
+                      <Input {...field} placeholder="Enter your email" />
                     </FormControl>
-                    <FormMessage className="text-xs">{form.formState.errors.email?.message}</FormMessage>
+                    <FormMessage className="text-xs">
+                      {form.formState.errors.email?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
-              >
-              </FormField>
+              ></FormField>
               <div className="flex gap-3">
                 <FormField
                   control={form.control}
@@ -116,11 +117,12 @@ function RouteComponent() {
                           placeholder="Enter your password"
                         />
                       </FormControl>
-                      <FormMessage className="text-xs">{form.formState.errors.password?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {form.formState.errors.password?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
-                >
-                </FormField>
+                ></FormField>
                 <FormField
                   control={form.control}
                   name="confirmPassword"
@@ -134,17 +136,22 @@ function RouteComponent() {
                           placeholder="Enter your password again"
                         />
                       </FormControl>
-                      <FormMessage className="text-xs">{form.formState.errors.password?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {form.formState.errors.password?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
-                >
-                </FormField>
+                ></FormField>
               </div>
               <FormDescription className="flex flex-col justify-end items-end gap-3">
-                <Button className="w-full" type="submit">Register</Button>
+                <Button className="w-full" type="submit">
+                  Register
+                </Button>
               </FormDescription>
               <FormDescription className="text-center">
-                <Link className="text-center" to="/login">Already have account?</Link>
+                <Link className="text-center" to="/login">
+                  Already have account?
+                </Link>
               </FormDescription>
             </form>
           </Form>
