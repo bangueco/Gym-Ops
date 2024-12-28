@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const registerSchema = z.object({
+export const registerSchema = z.object({
   firstName: z.string()
     .min(2, { message: "First name must be at least 2 characters long." })
     .max(30, { message: "First name must be at most 30 characters long." })
@@ -33,13 +33,12 @@ const registerSchema = z.object({
   }
 });
 
-const loginSchema = z.object({
+export const loginSchema = z.object({
   email: z.string()
     .email({ message: "Please provide a valid email address." }),
 
   password: z.string()
 });
 
-export {
-  registerSchema, loginSchema
-};
+export type LoginSchema = z.infer<typeof loginSchema>;
+export type RegisterSchema = z.infer<typeof registerSchema>;
