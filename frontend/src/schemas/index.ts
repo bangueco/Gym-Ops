@@ -40,5 +40,20 @@ export const loginSchema = z.object({
   password: z.string()
 });
 
+export const inputMemberSchema = z.object({
+  firstName: z.string()
+    .min(2, { message: "First name must be at least 2 characters." }),
+  lastName: z.string()
+    .min(2, { message: "Last name must be at least 2 characters." }),
+  email: z.string()
+    .email({ message: "Invalid email format." }),
+  phoneNumber: z.string()
+    .min(11, { message: "Phone number must be at least 11 characters." }),
+  birthDate: z.string()
+    .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/, { message: "Invalid date format." }),
+  membershipStatus: z.enum(["monthly", "half-month", "annual", "lifetime", "expired"], { message: "Invalid membership type." }),
+})
+
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type RegisterSchema = z.infer<typeof registerSchema>;
+export type InputMemberSchema = z.infer<typeof inputMemberSchema>;
