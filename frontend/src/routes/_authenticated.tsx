@@ -1,3 +1,4 @@
+import DashboardSidebar from '@/components/DashboardSidebar'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({
@@ -26,8 +27,11 @@ export const Route = createFileRoute('/_authenticated')({
 
 function AuthDashboardLayout() {
   return (
-    <>
-      <Outlet />
-    </>
+    <div className='flex flex-row'>
+      <DashboardSidebar />
+      <div className='p-3 w-full h-screen overflow-y-auto overflow-x-hidden flex flex-col'>
+        <Outlet />
+      </div>
+    </div>
   )
 }

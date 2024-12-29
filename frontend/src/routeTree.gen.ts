@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthenticatedManageMembersImport } from './routes/_authenticated.manage-members'
 import { Route as AuthenticatedDashboardImport } from './routes/_authenticated.dashboard'
 import { Route as AuthRegisterImport } from './routes/_auth.register'
 import { Route as AuthLoginImport } from './routes/_auth.login'
@@ -35,6 +36,14 @@ const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const AuthenticatedManageMembersRoute = AuthenticatedManageMembersImport.update(
+  {
+    id: '/manage-members',
+    path: '/manage-members',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any,
+)
 
 const AuthenticatedDashboardRoute = AuthenticatedDashboardImport.update({
   id: '/dashboard',
@@ -100,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/manage-members': {
+      id: '/_authenticated/manage-members'
+      path: '/manage-members'
+      fullPath: '/manage-members'
+      preLoaderRoute: typeof AuthenticatedManageMembersImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
@@ -119,10 +135,12 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedManageMembersRoute: typeof AuthenticatedManageMembersRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedManageMembersRoute: AuthenticatedManageMembersRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -135,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/manage-members': typeof AuthenticatedManageMembersRoute
 }
 
 export interface FileRoutesByTo {
@@ -143,6 +162,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/manage-members': typeof AuthenticatedManageMembersRoute
 }
 
 export interface FileRoutesById {
@@ -153,13 +173,20 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/manage-members': typeof AuthenticatedManageMembersRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/login' | '/register' | '/dashboard'
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/manage-members'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/login' | '/register' | '/dashboard'
+  to: '/' | '' | '/login' | '/register' | '/dashboard' | '/manage-members'
   id:
     | '__root__'
     | '/'
@@ -168,6 +195,7 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/register'
     | '/_authenticated/dashboard'
+    | '/_authenticated/manage-members'
   fileRoutesById: FileRoutesById
 }
 
@@ -211,7 +239,8 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/dashboard"
+        "/_authenticated/dashboard",
+        "/_authenticated/manage-members"
       ]
     },
     "/_auth/login": {
@@ -224,6 +253,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/dashboard": {
       "filePath": "_authenticated.dashboard.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/manage-members": {
+      "filePath": "_authenticated.manage-members.tsx",
       "parent": "/_authenticated"
     }
   }
