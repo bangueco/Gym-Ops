@@ -30,10 +30,10 @@ import { useLoginMutation } from '@/api/auth-query'
 import { useAuth } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/_auth/login')({
-  component: RouteComponent,
+  component: LoginPage,
 })
 
-function RouteComponent() {
+function LoginPage() {
 
   const loginMutation = useLoginMutation()
   const auth = useAuth()

@@ -6,10 +6,10 @@ export const Route = createFileRoute('/_authenticated')({
       throw redirect({ to: '/login' })
     }
   },
-  component: RouteComponent,
+  component: AuthenticatedDashboardLayout,
 })
 
-function RouteComponent() {
+function AuthenticatedDashboardLayout() {
   return (
     <>
       <Outlet />

@@ -2,10 +2,10 @@ import { useAuthQuery } from '@/api/auth-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/dashboard')({
-  component: RouteComponent,
+  component: DashboardPage,
 })
 
-function RouteComponent() {
+function DashboardPage() {
 
   const { data, isPending, isError } = useAuthQuery()
 

@@ -29,10 +29,10 @@ import { useRegisterMutation } from '@/api/auth-query'
 import { useAuth } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/_auth/register')({
-  component: RouteComponent,
+  component: RegisterPage,
 })
 
-function RouteComponent() {
+function RegisterPage() {
 
   const registerMutation = useRegisterMutation()
   const auth = useAuth()
