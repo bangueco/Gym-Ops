@@ -1,9 +1,9 @@
-import { AuthState } from '@/hooks/useAuth'
+import { AuthContext } from '@/hooks/useAuth'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
 interface IAuthContext {
-  auth: AuthState
+  auth: AuthContext
 }
 
 export const Route = createRootRouteWithContext<IAuthContext>()({

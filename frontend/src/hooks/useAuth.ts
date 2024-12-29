@@ -1,10 +1,10 @@
-import { useAuthQuery } from "@/api/auth-query";
+import { authQueryOptions, useAuthQuery } from "@/api/auth-query";
 import { router } from "@/router";
 import { User } from "@/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-export type AuthState =
+type AuthState =
   | { user: null; status: 'PENDING' }
   | { user: null; status: 'UNAUTHENTICATED' }
   | { user: User; status: 'AUTHENTICATED' }
@@ -12,6 +12,7 @@ export type AuthState =
 type AuthAction = {
   login: () => void
   logout: () => void
+  ensureData: () => Promise<User | undefined>
 }
 
 export type AuthContext = AuthState & AuthAction
@@ -25,21 +26,21 @@ export function useAuth(): AuthContext {
   }, [authQuery.data])
 
   useEffect(() => {
-    if (authQuery.error) {
-      queryClient.setQueryData(["auth"], null)
-      localStorage.removeItem('token')
-    }
+    if (authQuery.error === null) return
+    queryClient.setQueryData(["auth"], null)
   }, [authQuery.error, queryClient])
 
   const actions = {
     login: () => {
-      router.invalidate()
+      router.navigate({ to: "/dashboard" })
     },
     logout: () => {
       queryClient.setQueryData(["auth"], null)
       localStorage.removeItem('token')
-      router.invalidate()
       router.navigate({ to: "/login" })
+    },
+    ensureData: async () => {
+      return await queryClient.ensureQueryData(authQueryOptions())
     }
   }
 
@@ -47,8 +48,8 @@ export function useAuth(): AuthContext {
     case authQuery.isPending:
       return { ...actions, user: null, status: 'PENDING' }
     case !authQuery.data:
-      return { ...actions, user: null, status: 'UNAUTHENTICATED' }
+      return { ...actions, user: null, status: "UNAUTHENTICATED" }
     default:
-      return { ...actions, user: authQuery.data, status: "AUTHENTICATED" }
+      return { ...actions, user: authQuery.data.user, status: "AUTHENTICATED" }
   }
 }
