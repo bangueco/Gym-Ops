@@ -23,7 +23,10 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { loginSchema } from '@/schemas'
-import { useLoginMutation } from '@/api/authQuery'
+
+import { AxiosError } from 'axios'
+import toast from 'react-hot-toast'
+import { useLoginMutation } from '@/api/auth-query'
 
 export const Route = createFileRoute('/_auth/login')({
   component: RouteComponent,
@@ -42,7 +45,16 @@ function RouteComponent() {
   })
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    await loginMutation.mutateAsync(values)
+    try {
+      const login = await loginMutation.mutateAsync(values)
+      toast.success(login.data.message)
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else {
+        console.error(error)
+      }
+    }
   }
 
   return (
@@ -93,8 +105,8 @@ function RouteComponent() {
               ></FormField>
               <FormDescription className="flex flex-col justify-end items-end gap-3">
                 <Link>Forgot password?</Link>
-                <Button className="w-full" type="submit">
-                  Login
+                <Button disabled={form.formState.isSubmitting} className="w-full" type="submit">
+                  {form.formState.isSubmitting ? 'Logging in...' : 'Log in'}
                 </Button>
               </FormDescription>
               <FormDescription className="text-center">

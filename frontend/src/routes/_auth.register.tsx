@@ -23,12 +23,18 @@ import {
 } from '@/components/ui/card'
 
 import { createFileRoute, Link } from '@tanstack/react-router'
+import toast from 'react-hot-toast'
+import { AxiosError } from 'axios'
+import { useRegisterMutation } from '@/api/auth-query'
 
 export const Route = createFileRoute('/_auth/register')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+
+  const registerMutation = useRegisterMutation()
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -40,8 +46,17 @@ function RouteComponent() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof registerSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof registerSchema>) {
+    try {
+      const register = await registerMutation.mutateAsync(values)
+      toast.success(register.data.message)
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else {
+        console.error(error)
+      }
+    }
   }
 
   return (
@@ -144,8 +159,8 @@ function RouteComponent() {
                 ></FormField>
               </div>
               <FormDescription className="flex flex-col justify-end items-end gap-3">
-                <Button className="w-full" type="submit">
-                  Register
+                <Button disabled={form.formState.isSubmitting} className="w-full" type="submit">
+                  {form.formState.isSubmitting ? 'Registering...' : 'Register'}
                 </Button>
               </FormDescription>
               <FormDescription className="text-center">
