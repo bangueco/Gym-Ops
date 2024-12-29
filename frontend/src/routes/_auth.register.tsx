@@ -26,6 +26,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import toast from 'react-hot-toast'
 import { AxiosError } from 'axios'
 import { useRegisterMutation } from '@/api/auth-query'
+import { useAuth } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/_auth/register')({
   component: RouteComponent,
@@ -34,6 +35,7 @@ export const Route = createFileRoute('/_auth/register')({
 function RouteComponent() {
 
   const registerMutation = useRegisterMutation()
+  const auth = useAuth()
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -50,6 +52,7 @@ function RouteComponent() {
     try {
       const register = await registerMutation.mutateAsync(values)
       toast.success(register.data.message)
+      auth.login()
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message)

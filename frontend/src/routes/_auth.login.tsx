@@ -27,6 +27,7 @@ import { loginSchema } from '@/schemas'
 import { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
 import { useLoginMutation } from '@/api/auth-query'
+import { useAuth } from '@/hooks/useAuth'
 
 export const Route = createFileRoute('/_auth/login')({
   component: RouteComponent,
@@ -35,6 +36,7 @@ export const Route = createFileRoute('/_auth/login')({
 function RouteComponent() {
 
   const loginMutation = useLoginMutation()
+  const auth = useAuth()
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -48,6 +50,7 @@ function RouteComponent() {
     try {
       const login = await loginMutation.mutateAsync(values)
       toast.success(login.data.message)
+      auth.login()
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message)

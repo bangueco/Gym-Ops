@@ -7,10 +7,13 @@ import { router } from './router'
 
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from './lib/queryClient'
+import { useAuth } from './hooks/useAuth'
 
 function InnerApp() {
+  const auth = useAuth()
+
   return (
-    <RouterProvider router={router} />
+    <RouterProvider router={router} context={{ auth }} />
   )
 }
 

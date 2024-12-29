@@ -2,10 +2,12 @@ import { createRouter } from '@tanstack/react-router'
 
 import { routeTree } from './routeTree.gen'
 
+import { AuthState } from '@/hooks/useAuth'
+
 export const router = createRouter({
   routeTree,
   context: {
-    auth: undefined!,
+    auth: null as unknown as AuthState,
   },
 })
 
