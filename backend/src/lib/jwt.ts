@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 import config from "./utils/config";
 
-const generateAccessToken = (id: number): string => {
-  return jwt.sign({ id }, config.accessTokenKey, { expiresIn: "10m" });
+const generateAccessToken = (id: number, firstName: string, lastName: string, email: string): string => {
+  return jwt.sign({ id, firstName, lastName, email }, config.accessTokenKey, { expiresIn: "5m" });
 };
 
-const generateRefreshToken = (id: number): string => {
-  return jwt.sign({ id }, config.refreshTokenKey, { expiresIn: "30d" });
+const generateRefreshToken = (id: number, firstName: string, lastName: string, email: string): string => {
+  return jwt.sign({ id, firstName, lastName, email }, config.refreshTokenKey, { expiresIn: "30d" });
 };
 
 const verifyToken = (token: string): string | jwt.JwtPayload => {

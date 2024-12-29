@@ -11,19 +11,11 @@ const getUsers = async () => {
 const findById = async (userId: number) => {
   const user = await userRepository.findById(userId);
 
-  if (!user) {
-    throw new ApiError(httpStatusCode.NOT_FOUND, "User not found!");
-  }
-
   return user;
 };
 
 const findByEmail = async (email: string) => {
   const user = await userRepository.findByEmail(email);
-
-  if (!user) {
-    throw new ApiError(httpStatusCode.NOT_FOUND, "User not found!");
-  }
 
   return user;
 };

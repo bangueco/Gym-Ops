@@ -14,6 +14,25 @@ interface ILoginRequest {
   password: string;
 }
 
+const authenticatedUser = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  try {
+
+    const user = request.user;
+
+    response.status(httpStatusCode.OK).json({
+      message: "Authenticated user",
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 const register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
   try {
     const { firstName, lastName, email, password } = request.body as IRegisterRequest;
@@ -47,5 +66,5 @@ const login = async (request: Request, response: Response, next: NextFunction): 
 };
 
 export default {
-  register, login
+  authenticatedUser, register, login
 };

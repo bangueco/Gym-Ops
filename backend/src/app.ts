@@ -8,6 +8,15 @@ import authRouter from "@routes/auth.routes";
 import errorHandler from "@middlewares/errorHandler";
 import unknownEndpoint from "@middlewares/unknownEndpoint";
 
+
+import { JwtPayload } from "jsonwebtoken";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user: JwtPayload;
+  }
+}
+
 const app = express();
 
 // parse json body request

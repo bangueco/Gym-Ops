@@ -9,7 +9,7 @@ const register = async (firstName: string, lastName: string,
 ) => {
 
   const newUser = await userService.createUser(firstName, lastName, email, password);
-  const accessToken = jwt.generateAccessToken(newUser.userId);
+  const accessToken = jwt.generateAccessToken(newUser.userId, newUser.firstName, newUser.lastName, newUser.email);
 
   return {
     user: {
@@ -35,7 +35,7 @@ const login = async (email: string, password: string) => {
     throw new ApiError(httpStatusCode.BAD_REQUEST, "Invalid email or password");
   }
 
-  const accessToken = jwt.generateAccessToken(existingUser.userId);
+  const accessToken = jwt.generateAccessToken(existingUser.userId, existingUser.firstName, existingUser.lastName, existingUser.email);
 
   return {
     user: {

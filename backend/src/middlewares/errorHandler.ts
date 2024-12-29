@@ -2,6 +2,7 @@ import { ApiError, ValidationError } from "@lib/utils/appError";
 import httpStatusCode from "@lib/utils/httpStatusCode";
 import logger from "@lib/utils/logger";
 import { NextFunction, Request, Response } from "express";
+import { JsonWebTokenError } from "jsonwebtoken";
 import { ZodError, ZodIssue } from "zod";
 
 const handleZodError = (error: ZodError) => {
@@ -48,7 +49,12 @@ const errorHandler = (error: unknown, _request: Request, response: Response, nex
     const zodError = handleZodError(error);
     response.status(httpStatusCode.BAD_REQUEST).json(zodError);
     return;
+  } else if (error instanceof JsonWebTokenError) {
+    response.status(httpStatusCode.UNAUTHORIZED).json({message: "Invalid token"});
+    return;
   }
+
+  // TODO: Add TokenExpiredError handler here
 
   return next(error);
 };

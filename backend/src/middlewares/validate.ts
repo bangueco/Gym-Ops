@@ -1,3 +1,6 @@
+import jwt from "@lib/jwt";
+import { ApiError } from "@lib/utils/appError";
+import httpStatusCode from "@lib/utils/httpStatusCode";
 import authSchema from "@schemas/authSchema";
 import { NextFunction, Request, Response } from "express";
 
@@ -35,6 +38,32 @@ const login = async (request: Request, _response: Response, next: NextFunction) 
 
 };
 
+const accessToken = (request: Request, _response: Response, next: NextFunction) => {
+  try {
+    const authorizationHeader = request.headers.authorization;
+
+    if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
+      throw new ApiError(httpStatusCode.UNAUTHORIZED, "Invalid authorization header.");
+    }
+
+    const token = authorizationHeader.replace("Bearer ", "");
+
+    if (!token) {
+      throw new ApiError(httpStatusCode.UNAUTHORIZED, "Bearer token not found.");
+    }
+
+    const decoded = jwt.verifyToken(token);
+
+    if (typeof decoded !== "string") {
+      request.user = decoded;
+    }
+
+    next();
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
 export default {
-  register, login
+  register, login, accessToken
 };
