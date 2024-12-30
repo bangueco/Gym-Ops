@@ -9,10 +9,14 @@ const generateRefreshToken = (id: number, firstName: string, lastName: string, e
   return jwt.sign({ id, firstName, lastName, email }, config.refreshTokenKey, { expiresIn: "30d" });
 };
 
-const verifyToken = (token: string): string | jwt.JwtPayload => {
+const verifyAccessToken = (token: string): string | jwt.JwtPayload => {
   return jwt.verify(token, config.accessTokenKey);
 };
 
+const verifyRefreshToken = (token: string): string | jwt.JwtPayload => {
+  return jwt.verify(token, config.refreshTokenKey);
+};
+
 export default {
-  generateAccessToken, generateRefreshToken, verifyToken
+  generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken
 };
