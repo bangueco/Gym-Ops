@@ -53,3 +53,19 @@ export function useRegisterMutation() {
     }
   })
 }
+
+export function useLogoutMutation() {
+
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationKey: ["logout"],
+    mutationFn: async () => {
+      return await authAxios.post('/auth/logout')
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["auth"], null)
+      localStorage.removeItem("token")
+    }
+  })
+}
