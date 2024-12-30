@@ -48,7 +48,7 @@ function LoginPage() {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
       const login = await loginMutation.mutateAsync(values)
-      toast.success(login.data.message)
+      toast.success(login.message)
       router.navigate({ to: "/dashboard" })
     } catch (error) {
       if (error instanceof AxiosError) {

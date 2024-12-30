@@ -21,10 +21,9 @@ export function useLoginMutation() {
   return useMutation({
     mutationKey: ["login"],
     mutationFn: async ({ email, password }: LoginSchema) => {
-      return await authAxios.post("/auth/login", { email, password })
+      return (await authAxios.post('/auth/login', { email, password })).data as AuthenticationResponse
     },
-    onSuccess: (response) => {
-      const data = response.data as AuthenticationResponse
+    onSuccess: (data) => {
       queryClient.setQueryData(["auth"], { user: data.user })
       localStorage.setItem("token", data.token)
     },
@@ -41,10 +40,9 @@ export function useRegisterMutation() {
   return useMutation({
     mutationKey: ["register"],
     mutationFn: async ({ firstName, lastName, email, password }: RegisterSchema) => {
-      return await authAxios.post('/auth/register', { firstName, lastName, email, password })
+      return (await authAxios.post('/auth/register', { firstName, lastName, email, password })).data as AuthenticationResponse
     },
-    onSuccess: (response) => {
-      const data = response.data as AuthenticationResponse
+    onSuccess: (data) => {
       queryClient.setQueryData(["auth"], { user: data.user })
       localStorage.setItem("token", data.token)
     },

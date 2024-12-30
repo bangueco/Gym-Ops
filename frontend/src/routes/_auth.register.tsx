@@ -51,7 +51,7 @@ function RegisterPage() {
   async function onSubmit(values: z.infer<typeof registerSchema>) {
     try {
       const register = await registerMutation.mutateAsync(values)
-      toast.success(register.data.message)
+      toast.success(register.message)
       auth.login()
     } catch (error) {
       if (error instanceof AxiosError) {
