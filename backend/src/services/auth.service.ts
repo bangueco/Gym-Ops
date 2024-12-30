@@ -10,6 +10,7 @@ const register = async (firstName: string, lastName: string,
 
   const newUser = await userService.createUser(firstName, lastName, email, password);
   const accessToken = jwt.generateAccessToken(newUser.userId, newUser.firstName, newUser.lastName, newUser.email);
+  const refreshToken = jwt.generateRefreshToken(newUser.userId, newUser.firstName, newUser.lastName, newUser.email);
 
   return {
     user: {
@@ -17,7 +18,8 @@ const register = async (firstName: string, lastName: string,
       lastName: newUser.lastName,
       email: newUser.email
     },
-    accessToken
+    accessToken,
+    refreshToken
   };
 };
 
@@ -36,6 +38,7 @@ const login = async (email: string, password: string) => {
   }
 
   const accessToken = jwt.generateAccessToken(existingUser.userId, existingUser.firstName, existingUser.lastName, existingUser.email);
+  const refreshToken = jwt.generateRefreshToken(existingUser.userId, existingUser.firstName, existingUser.lastName, existingUser.email);
 
   return {
     user: {
@@ -43,7 +46,8 @@ const login = async (email: string, password: string) => {
       lastName: existingUser.lastName,
       email: existingUser.email
     },
-    accessToken
+    accessToken,
+    refreshToken
   };
 };
 

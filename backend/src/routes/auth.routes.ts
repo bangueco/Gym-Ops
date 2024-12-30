@@ -4,7 +4,8 @@ import express from "express";
 
 const authRouter = express.Router();
 
-authRouter.get("/", validate.accessToken, authController.authenticatedUser);
+authRouter.get("/", [validate.refreshToken, validate.accessToken], authController.authenticatedUser);
+authRouter.get("/refresh", validate.refreshToken, authController.refreshUserToken);
 authRouter.post("/register", validate.register, authController.register);
 authRouter.post("/login", validate.login, authController.login);
 
