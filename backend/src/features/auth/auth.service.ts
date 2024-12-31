@@ -1,8 +1,8 @@
 import jwt from "@lib/jwt";
-import userService from "./user.service";
 import { ApiError } from "@lib/utils/appError";
 import httpStatusCode from "@lib/utils/httpStatusCode";
 import bcrypt from "@lib/bcrypt";
+import { userService } from "@features/users";
 
 const register = async (firstName: string, lastName: string,
   email: string, password: string

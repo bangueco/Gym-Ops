@@ -1,10 +1,10 @@
 import jwt from "@lib/jwt";
 import { ApiError } from "@lib/utils/appError";
 import httpStatusCode from "@lib/utils/httpStatusCode";
-import authSchema from "@schemas/authSchema";
 import { NextFunction, Request, Response } from "express";
+import authSchema from "./auth.schema";
 
-const register = async (request: Request, _response: Response, next: NextFunction) => {
+const registerInput = async (request: Request, _response: Response, next: NextFunction) => {
 
   try {
 
@@ -21,7 +21,7 @@ const register = async (request: Request, _response: Response, next: NextFunctio
 
 };
 
-const login = async (request: Request, _response: Response, next: NextFunction) => {
+const loginInput = async (request: Request, _response: Response, next: NextFunction) => {
 
   try {
 
@@ -85,5 +85,5 @@ const refreshToken = (request: Request, _response: Response, next: NextFunction)
 };
 
 export default {
-  register, login, accessToken, refreshToken
+  registerInput, loginInput, accessToken, refreshToken
 };

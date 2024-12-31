@@ -3,9 +3,9 @@ import config from "./config";
 type CookieOptions = {
   httpOnly: boolean;
   maxAge: number;
-  secure?: boolean;
-  sameSite?: "strict" | "none" | "lax";
-  path: string;
+  secure: boolean;
+  sameSite: "strict" | "none" | "lax";
+  path: string
 };
 
 type CookieConfig = {
@@ -23,7 +23,7 @@ export const cookieConfig: CookieConfig = {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       secure: config.environment !== "production",
       sameSite: config.environment === "production" ? "strict" : "none",
-      path: "/",
+      path: "/"
     },
   },
 };
