@@ -5,11 +5,11 @@ const getUsers = async (): Promise<Array<User> | null> => {
   return await prisma.user.findMany();
 };
 
-const findById = async (userId: number): Promise<User | null> => {
+const getUserById = async (userId: number): Promise<User | null> => {
   return await prisma.user.findUnique({where: {userId}});
 };
 
-const findByEmail = async (email: string): Promise<User | null> => {
+const getUserByEmail = async (email: string): Promise<User | null> => {
   return await prisma.user.findUnique({where: {email}});
 };
 
@@ -38,5 +38,5 @@ const deleteUsers = async () => {
 };
 
 export default {
-  getUsers, findById, findByEmail, createUser, updateUser, deleteUser, deleteUsers
+  getUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser, deleteUsers
 };

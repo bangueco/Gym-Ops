@@ -25,7 +25,7 @@ const register = async (firstName: string, lastName: string,
 
 const login = async (email: string, password: string) => {
 
-  const existingUser = await userService.findByEmail(email);
+  const existingUser = await userService.getUserByEmail(email);
 
   if (!existingUser) {
     throw new ApiError(httpStatusCode.BAD_REQUEST, "Invalid email or password.");

@@ -8,14 +8,14 @@ const getUsers = async () => {
   return await userRepository.getUsers();
 };
 
-const findById = async (userId: number) => {
-  const user = await userRepository.findById(userId);
+const getUserById = async (userId: number) => {
+  const user = await userRepository.getUserById(userId);
 
   return user;
 };
 
-const findByEmail = async (email: string) => {
-  const user = await userRepository.findByEmail(email);
+const getUserByEmail = async (email: string) => {
+  const user = await userRepository.getUserByEmail(email);
 
   return user;
 };
@@ -23,7 +23,7 @@ const findByEmail = async (email: string) => {
 const createUser = async (firstName: string, lastName: string,
   email: string, password: string
 ) => {
-  const existingEmail = await userRepository.findByEmail(email);
+  const existingEmail = await userRepository.getUserByEmail(email);
 
   if (existingEmail) {
     throw new ValidationError(httpStatusCode.BAD_REQUEST, "email", "Email is already taken!");
@@ -35,7 +35,7 @@ const createUser = async (firstName: string, lastName: string,
 };
 
 const updateUser = async (userId: number, userData: Partial<User>) => {
-  const user = await userRepository.findById(userId);
+  const user = await userRepository.getUserById(userId);
 
   if (!user) {
     throw new ApiError(httpStatusCode.NOT_FOUND, "User not found!");
@@ -45,7 +45,7 @@ const updateUser = async (userId: number, userData: Partial<User>) => {
 };
 
 const deleteUser = async (userId: number) => {
-  const user = await userRepository.findById(userId);
+  const user = await userRepository.getUserById(userId);
 
   if (!user) {
     throw new ApiError(httpStatusCode.NOT_FOUND, "User not found!");
@@ -59,5 +59,5 @@ const deleteUsers = async () => {
 };
 
 export default {
-  getUsers, findById, findByEmail, createUser, updateUser, deleteUser, deleteUsers
+  getUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser, deleteUsers
 };
