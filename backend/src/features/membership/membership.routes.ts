@@ -8,6 +8,10 @@ const membershipRouter = express.Router();
 membershipRouter.use(authValidate.accessToken);
 membershipRouter.use(authValidate.refreshToken);
 
+membershipRouter.get("/", membershipController.getAllMemberships);
+membershipRouter.get("/:membershipId", membershipController.getMembershipById);
 membershipRouter.post("/", membershipValidate.membershipInput, membershipController.createMembership);
+membershipRouter.put("/:membershipId", membershipValidate.membershipInput, membershipController.updateMembership);
+membershipRouter.delete("/:membershipId", membershipController.deleteMembership);
 
 export default membershipRouter;

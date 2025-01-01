@@ -6,7 +6,11 @@ const getMemberships = async () => {
 };
 
 const getMembershipById = async (membershipId: number) => {
-  return await prisma.membership.findUnique({where: {membershipId}});
+  return await prisma.membership.findUnique({
+    where: {
+      membershipId
+    }
+  });
 };
 
 const createMembership = async (membershipName: string, membershipLength: number) => {
