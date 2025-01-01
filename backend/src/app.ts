@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 
 import { authRouter } from "@features/auth";
+import { membershipRouter } from "@features/membership";
 
 import errorHandler from "@middlewares/errorHandler";
 import unknownEndpoint from "@middlewares/unknownEndpoint";
@@ -43,6 +44,7 @@ app.use(compression());
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/memberships", membershipRouter);
 
 // Error handler middlewares
 app.use(unknownEndpoint);
