@@ -56,5 +56,5 @@ export const member = z.object({
     .min(11, { message: "Phone number must be at least 11 characters long." })
     .max(11, { message: "Phone number must be at most 11 characters long." }),
 
-  membershipId: z.string({ message: "Please select membership type." })
+  membershipId: z.number({ message: "Please select membership type." })
 });
