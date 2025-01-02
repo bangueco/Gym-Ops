@@ -42,18 +42,35 @@ export const loginSchema = z.object({
 
 export const inputMemberSchema = z.object({
   firstName: z.string()
-    .min(2, { message: "First name must be at least 2 characters." }),
+    .min(2, { message: "First name must be at least 2 characters long." })
+    .max(30, { message: "First name must be at most 30 characters long." })
+    .regex(/^[A-Za-z]+(?: [A-Za-z]+)*$/, { message: "First name must only contain alphabetic characters." }),
+
   lastName: z.string()
-    .min(2, { message: "Last name must be at least 2 characters." }),
+    .min(2, { message: "Last name must be at least 2 characters long." })
+    .max(30, { message: "Last name must be at most 30 characters long." })
+    .regex(/^[A-Za-z]+(?: [A-Za-z]+)*$/, { message: "Last name must only contain alphabetic characters." }),
+
   email: z.string()
-    .email({ message: "Invalid email format." }),
+    .email({ message: "Please provide a valid email address." }),
+
   phoneNumber: z.string()
-    .min(11, { message: "Phone number must be at least 11 characters." }),
-  birthDate: z.string()
-    .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/, { message: "Invalid date format." }),
-  membershipStatus: z.enum(["monthly", "half-month", "annual", "lifetime", "expired"], { message: "Invalid membership type." }),
-})
+    .min(11, { message: "Phone number must be at least 11 characters long." })
+    .max(11, { message: "Phone number must be at most 11 characters long." }),
+
+  membershipId: z.string({ message: "Please select membership type." })
+});
+
+export const inputMembershipSchema = z.object({
+  membershipName: z.string()
+    .min(2, { message: "Membership name must be at least 2 characters long." })
+    .max(30, { message: "Membership name must be at most 30 characters long." }),
+
+  membershipLength: z.coerce.number()
+    .min(1, { message: "Membership length must be at least 1 day." })
+});
 
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type RegisterSchema = z.infer<typeof registerSchema>;
 export type InputMemberSchema = z.infer<typeof inputMemberSchema>;
+export type InputMembershipSchema = z.infer<typeof inputMembershipSchema>;
