@@ -13,10 +13,13 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthImport } from './routes/_auth'
+import { Route as IndexImport } from './routes/index'
+import { Route as AuthenticatedManageMembershipsImport } from './routes/_authenticated.manage-memberships'
 import { Route as AuthenticatedManageMembersImport } from './routes/_authenticated.manage-members'
 import { Route as AuthenticatedDashboardImport } from './routes/_authenticated.dashboard'
 import { Route as AuthRegisterImport } from './routes/_auth.register'
 import { Route as AuthLoginImport } from './routes/_auth.login'
+import { Route as AuthenticatedManageMembershipsIndexImport } from './routes/_authenticated.manage-memberships/index'
 
 // Create/Update Routes
 
@@ -29,6 +32,19 @@ const AuthRoute = AuthImport.update({
   id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthenticatedManageMembershipsRoute =
+  AuthenticatedManageMembershipsImport.update({
+    id: '/manage-memberships',
+    path: '/manage-memberships',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const AuthenticatedManageMembersRoute = AuthenticatedManageMembersImport.update(
   {
@@ -56,10 +72,24 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthenticatedManageMembershipsIndexRoute =
+  AuthenticatedManageMembershipsIndexImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedManageMembershipsRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -102,6 +132,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedManageMembersImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/manage-memberships': {
+      id: '/_authenticated/manage-memberships'
+      path: '/manage-memberships'
+      fullPath: '/manage-memberships'
+      preLoaderRoute: typeof AuthenticatedManageMembershipsImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/manage-memberships/': {
+      id: '/_authenticated/manage-memberships/'
+      path: '/'
+      fullPath: '/manage-memberships/'
+      preLoaderRoute: typeof AuthenticatedManageMembershipsIndexImport
+      parentRoute: typeof AuthenticatedManageMembershipsImport
+    }
   }
 }
 
@@ -119,14 +163,32 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface AuthenticatedManageMembershipsRouteChildren {
+  AuthenticatedManageMembershipsIndexRoute: typeof AuthenticatedManageMembershipsIndexRoute
+}
+
+const AuthenticatedManageMembershipsRouteChildren: AuthenticatedManageMembershipsRouteChildren =
+  {
+    AuthenticatedManageMembershipsIndexRoute:
+      AuthenticatedManageMembershipsIndexRoute,
+  }
+
+const AuthenticatedManageMembershipsRouteWithChildren =
+  AuthenticatedManageMembershipsRoute._addFileChildren(
+    AuthenticatedManageMembershipsRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedManageMembersRoute: typeof AuthenticatedManageMembersRoute
+  AuthenticatedManageMembershipsRoute: typeof AuthenticatedManageMembershipsRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedManageMembersRoute: AuthenticatedManageMembersRoute,
+  AuthenticatedManageMembershipsRoute:
+    AuthenticatedManageMembershipsRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -134,53 +196,81 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 )
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '': typeof AuthenticatedRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/manage-members': typeof AuthenticatedManageMembersRoute
+  '/manage-memberships': typeof AuthenticatedManageMembershipsRouteWithChildren
+  '/manage-memberships/': typeof AuthenticatedManageMembershipsIndexRoute
 }
 
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '': typeof AuthenticatedRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/manage-members': typeof AuthenticatedManageMembersRoute
+  '/manage-memberships': typeof AuthenticatedManageMembershipsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/manage-members': typeof AuthenticatedManageMembersRoute
+  '/_authenticated/manage-memberships': typeof AuthenticatedManageMembershipsRouteWithChildren
+  '/_authenticated/manage-memberships/': typeof AuthenticatedManageMembershipsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/register' | '/dashboard' | '/manage-members'
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/manage-members'
+    | '/manage-memberships'
+    | '/manage-memberships/'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/login' | '/register' | '/dashboard' | '/manage-members'
+  to:
+    | '/'
+    | ''
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/manage-members'
+    | '/manage-memberships'
   id:
     | '__root__'
+    | '/'
     | '/_auth'
     | '/_authenticated'
     | '/_auth/login'
     | '/_auth/register'
     | '/_authenticated/dashboard'
     | '/_authenticated/manage-members'
+    | '/_authenticated/manage-memberships'
+    | '/_authenticated/manage-memberships/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
 }
@@ -195,9 +285,13 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/",
         "/_auth",
         "/_authenticated"
       ]
+    },
+    "/": {
+      "filePath": "index.tsx"
     },
     "/_auth": {
       "filePath": "_auth.tsx",
@@ -210,7 +304,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/dashboard",
-        "/_authenticated/manage-members"
+        "/_authenticated/manage-members",
+        "/_authenticated/manage-memberships"
       ]
     },
     "/_auth/login": {
@@ -228,6 +323,17 @@ export const routeTree = rootRoute
     "/_authenticated/manage-members": {
       "filePath": "_authenticated.manage-members.tsx",
       "parent": "/_authenticated"
+    },
+    "/_authenticated/manage-memberships": {
+      "filePath": "_authenticated.manage-memberships.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/manage-memberships/"
+      ]
+    },
+    "/_authenticated/manage-memberships/": {
+      "filePath": "_authenticated.manage-memberships/index.tsx",
+      "parent": "/_authenticated/manage-memberships"
     }
   }
 }
