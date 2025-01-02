@@ -1,13 +1,14 @@
 import express from "express";
 import authController from "./auth.controller";
-import authValidate from "./auth.validate";
+import validate from "@middlewares/validate";
+import authSchema from "./auth.schema";
 
 const authRouter = express.Router();
 
-authRouter.get("/", [authValidate.refreshToken, authValidate.accessToken], authController.authenticatedUser);
-authRouter.get("/refresh", authValidate.refreshToken, authController.refreshUserToken);
-authRouter.post("/register", authValidate.registerInput, authController.register);
-authRouter.post("/login", authValidate.loginInput, authController.login);
-authRouter.post("/logout", authValidate.refreshToken, authController.logout);
+authRouter.get("/", [validate.refreshToken, validate.accessToken], authController.authenticatedUser);
+authRouter.get("/refresh", validate.refreshToken, authController.refreshUserToken);
+authRouter.post("/register", validate.schema(authSchema.register), authController.register);
+authRouter.post("/login", validate.schema(authSchema.login), authController.login);
+authRouter.post("/logout", validate.refreshToken, authController.logout);
 
 export default authRouter;

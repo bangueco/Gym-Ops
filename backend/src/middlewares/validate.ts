@@ -2,40 +2,20 @@ import jwt from "@lib/jwt";
 import { ApiError } from "@lib/utils/appError";
 import httpStatusCode from "@lib/utils/httpStatusCode";
 import { NextFunction, Request, Response } from "express";
-import authSchema from "./auth.schema";
+import { z } from "zod";
 
-const registerInput = async (request: Request, _response: Response, next: NextFunction) => {
-
-  try {
-
-    // Validate request with auth schema from zod
-    const validatedData = await authSchema.register.parseAsync(request.body);
-
-    // Reattach validated request into body
-    request.body = validatedData;
-
-    next();
-  } catch (error: unknown) {
-    next(error);
-  }
-
-};
-
-const loginInput = async (request: Request, _response: Response, next: NextFunction) => {
-
-  try {
-
-    // Validate request with auth schema from zod
-    const validatedData = await authSchema.login.parseAsync(request.body);
-
-    // Reattach validated request into body
-    request.body = validatedData;
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-
+const schema = (schema: z.ZodObject<z.ZodRawShape>) => {
+  return async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      // Validate request with auth schema from zod
+      const validatedData = await schema.parseAsync(request.body);
+      // Reattach validated request into body
+      request.body = validatedData;
+      next();
+    } catch (error: unknown) {
+      next(error);
+    }
+  };
 };
 
 const accessToken = (request: Request, _response: Response, next: NextFunction) => {
@@ -85,5 +65,5 @@ const refreshToken = (request: Request, _response: Response, next: NextFunction)
 };
 
 export default {
-  registerInput, loginInput, accessToken, refreshToken
+  schema, accessToken, refreshToken
 };
