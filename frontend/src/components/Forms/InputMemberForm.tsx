@@ -1,5 +1,3 @@
-"use client"
-
 import { inputMemberSchema } from "@/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -22,8 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useAddMemberMutation } from "@/api/member-query"
+import toast from "react-hot-toast"
+import { AxiosError } from "axios"
+import { useMembershipQuery } from "@/api/membership-query"
 
 export default function InputMemberForm() {
+
+  const addMemberMutation = useAddMemberMutation()
+  const { data, isLoading, isError } = useMembershipQuery()
 
   const form = useForm<z.infer<typeof inputMemberSchema>>({
     resolver: zodResolver(inputMemberSchema),
@@ -32,13 +37,22 @@ export default function InputMemberForm() {
       lastName: "",
       email: "",
       phoneNumber: "",
-      birthDate: "",
-      membershipStatus: undefined,
+      membershipId: undefined,
     },
   })
 
-  function onSubmit(values: z.infer<typeof inputMemberSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof inputMemberSchema>) {
+    try {
+      const addMember = await addMemberMutation.mutateAsync(values)
+      toast.success(addMember.message)
+      form.reset()
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message)
+      } else {
+        console.error(error)
+      }
+    }
   }
 
   return (
@@ -72,7 +86,7 @@ export default function InputMemberForm() {
             )}
           />
         </div>
-        <div className="w-full grid grid-cols-2 gap-3">
+        <div className="w-full grid grid-cols-2 gap-3 items-center justify-center">
           <FormField
             control={form.control}
             name="email"
@@ -88,21 +102,6 @@ export default function InputMemberForm() {
           />
           <FormField
             control={form.control}
-            name="birthDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Birthdate</FormLabel>
-                <FormControl>
-                  <Input type="date" placeholder="Enter birthdate" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="w-full grid grid-cols-2 gap-3">
-          <FormField
-            control={form.control}
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
@@ -114,23 +113,35 @@ export default function InputMemberForm() {
               </FormItem>
             )}
           />
+        </div>
+        <div className="w-full grid grid-cols-2 gap-3">
           <FormField
             control={form.control}
-            name="membershipStatus"
+            name="membershipId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Membership Status</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select status" />
+                    <SelectTrigger className="w-[250px]">
+                      {
+                        isLoading && <SelectValue placeholder="Loading" />
+                      }
+                      {
+                        isError && <SelectValue placeholder="Error fetching data" />
+                      }
+                      {
+                        data?.length !== 0 ? <SelectValue placeholder="Select status" /> : <SelectValue placeholder="No available memberships" />
+                      }
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="expired">Expired</SelectItem>
-                      <SelectItem value="half-month">Half-Month</SelectItem>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="annual">Annual</SelectItem>
-                      <SelectItem value="lifetime">Lifetime</SelectItem>
+                      {
+                        data?.map((membership) => (
+                          <SelectItem key={membership.membershipId} value={membership.membershipId.toString()}>
+                            {membership.membershipName}
+                          </SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
                 </FormControl>
