@@ -5,13 +5,11 @@ import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 
-import { authRouter } from "@features/auth";
-import { membershipRouter } from "@features/membership";
-
 import errorHandler from "@middlewares/errorHandler";
 import unknownEndpoint from "@middlewares/unknownEndpoint";
 
 import { JwtPayload } from "jsonwebtoken";
+import apiRouter from "src/routes";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -42,9 +40,8 @@ app.use(cookieParser());
 // gzip compression
 app.use(compression());
 
-// Routes
-app.use("/api/auth", authRouter);
-app.use("/api/memberships", membershipRouter);
+// Routes for api features
+app.use("/api", apiRouter);
 
 // Error handler middlewares
 app.use(unknownEndpoint);
