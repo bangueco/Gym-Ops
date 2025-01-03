@@ -35,7 +35,7 @@ export function useUpdateMemberMutation() {
 
   return useMutation({
     mutationKey: ["updateMember"],
-    mutationFn: async ({ memberId, firstName, lastName, email, phoneNumber, membershipId }: Member) => {
+    mutationFn: async ({ memberId, firstName, lastName, email, phoneNumber, membershipId }: Partial<Member>) => {
       return (await authAxios.put(`/members/${memberId}`, {firstName, lastName, email, phoneNumber, membershipId})).data as MemberResponse
     },
     onSuccess: () => {
@@ -50,7 +50,7 @@ export function useDeleteMemberMutation() {
 
   return useMutation({
     mutationKey: ["deleteMember"],
-    mutationFn: async ({ memberId }: Member) => {
+    mutationFn: async (memberId: number) => {
       return (await authAxios.delete(`/members/${memberId}`)).data as MemberResponse
     },
     onSuccess: () => {
