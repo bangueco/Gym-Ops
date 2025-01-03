@@ -10,7 +10,9 @@ export type Member = {
   lastName: string
   email: string
   phoneNumber: string
-  membershipId: number
+  membershipId?: number
+  membershipStart?: Date
+  membershipEnd?: Date
 }
 
 export type Membership = {

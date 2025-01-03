@@ -24,6 +24,7 @@ import { useAddMemberMutation } from "@/api/member-query"
 import toast from "react-hot-toast"
 import { AxiosError } from "axios"
 import { useMembershipQuery } from "@/api/membership-query"
+import { router } from "@/router"
 
 export default function InputMemberForm() {
 
@@ -46,6 +47,7 @@ export default function InputMemberForm() {
       const addMember = await addMemberMutation.mutateAsync(values)
       toast.success(addMember.message)
       form.reset()
+      router.invalidate()
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message)
@@ -131,10 +133,13 @@ export default function InputMemberForm() {
                         isError && <SelectValue placeholder="Error fetching data" />
                       }
                       {
-                        data?.length !== 0 ? <SelectValue placeholder="Select status" /> : <SelectValue placeholder="No available memberships" />
+                        !isLoading && !isError && <SelectValue placeholder="Select status" />
                       }
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="0">
+                        Inactive
+                      </SelectItem>
                       {
                         data?.map((membership) => (
                           <SelectItem key={membership.membershipId} value={membership.membershipId.toString()}>
