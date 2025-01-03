@@ -1,6 +1,7 @@
 import { ApiError } from "@lib/utils/appError";
 import memberRepository from "./member.repository";
 import { Member } from "@prisma/client";
+import { membershipRepository, membershipService } from "@features/membership";
 
 const getMembers = async () => {
   return await memberRepository.getMembers();
@@ -11,7 +12,28 @@ const getMemberById = async (memberId: number) => {
 };
 
 const createMember = async (firstName: string, lastName: string, email: string, phoneNumber: string, membershipId: number) => {
-  return await memberRepository.createMember(firstName, lastName, email, phoneNumber, membershipId);
+
+  const emailExists = await memberRepository.getMemberByEmail(email);
+
+  if (emailExists) {
+    throw new ApiError(400, "Email already exists!");
+  }
+
+  if (membershipId === 0) {
+    return await memberRepository.createMember(firstName, lastName, email, phoneNumber, null, null, null);
+  }
+
+  const membership = await membershipService.getMembershipById(membershipId);
+
+  if (!membership) {
+    throw new ApiError(404, "Membership not found!");
+  }
+
+  const membershipStart = new Date();
+  const membershipEnd = new Date();
+  membershipEnd.setDate(membershipStart.getDate() + membership.membershipLength + 1);
+
+  return await memberRepository.createMember(firstName, lastName, email, phoneNumber, membershipId, membershipStart, membershipEnd);
 };
 
 const updateMember = async (memberId: number, memberData: Partial<Member>) => {
@@ -20,6 +42,36 @@ const updateMember = async (memberId: number, memberData: Partial<Member>) => {
   if (!member) {
     throw new ApiError(404, "Member not found!");
   }
+
+  if (memberData.email) {
+    const emailExists = await memberRepository.getMemberByEmail(memberData.email);
+
+    if (emailExists && emailExists.memberId !== memberId) {
+      throw new ApiError(400, "Email already exists!");
+    }
+
+  }
+
+  if (memberData.membershipId === 0) {
+    return await memberRepository.updateMember(memberId, {...memberData, membershipId: null, membershipStart: null, membershipEnd: null});
+  }
+
+  if (!memberData.membershipId) {
+    throw new ApiError(404, "Membership not defined!");
+  }
+
+  const membership = await membershipRepository.getMembershipById(memberData.membershipId);
+
+  if (!membership) {
+    throw new ApiError(404, "Membership not found!");
+  }
+
+  const membershipStart = new Date();
+  const membershipEnd = new Date();
+  membershipEnd.setDate(membershipStart.getDate() + membership.membershipLength + 1);
+
+  memberData.membershipStart = membershipStart;
+  memberData.membershipEnd = membershipEnd;
 
   return await memberRepository.updateMember(memberId, memberData);
 };
