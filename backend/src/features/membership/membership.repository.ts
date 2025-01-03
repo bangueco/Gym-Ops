@@ -2,7 +2,7 @@ import prisma from "@lib/prismaClient";
 import { Membership } from "@prisma/client";
 
 const getMemberships = async () => {
-  return await prisma.membership.findMany();
+  return await prisma.membership.findMany({orderBy: {membershipId: "asc"}});
 };
 
 const getMembershipById = async (membershipId: number) => {
