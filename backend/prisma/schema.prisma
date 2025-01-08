@@ -13,4 +13,29 @@ model User {
   lastName  String @db.VarChar(30)
   email     String @unique
   password  String
+  Member    Member[]
+  Membership Membership[]
+}
+
+model Member {
+  memberId Int   @id @default(autoincrement())
+  firstName String @db.VarChar(30)
+  lastName  String @db.VarChar(30)
+  email     String @unique
+  phoneNumber String
+  membershipId Int?
+  membershipStart DateTime? @db.Date
+  membershipEnd DateTime? @db.Date
+  createdBy Int
+  membership Membership? @relation(fields: [membershipId], references: [membershipId])
+  user User @relation(fields: [createdBy], references: [userId])
+}
+
+model Membership {
+  membershipId Int @id @default(autoincrement())
+  membershipName String
+  membershipLength Int
+  members Member[]
+  createdBy Int
+  user User @relation(fields: [createdBy], references: [userId])
 }
