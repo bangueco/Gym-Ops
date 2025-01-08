@@ -14,9 +14,11 @@ const getMemberByEmail = async (email: string) => {
 };
 
 const createMember = async (firstName: string, lastName: string, email: string, phoneNumber: string,
-  membershipId: number | null, membershipStart: Date | null, membershipEnd: Date | null
+  membershipId: number | null, membershipStart: Date | null, membershipEnd: Date | null, createdBy: number
 ) => {
-  return await prisma.member.create({ data: { firstName, lastName, email, phoneNumber, membershipId, membershipStart, membershipEnd } });
+  return await prisma.member.create({data: {
+    firstName, lastName, email, phoneNumber, membershipId, membershipStart, membershipEnd, createdBy
+  }});
 };
 
 const updateMember = async (memberId: number, memberData: Partial<Member>) => {

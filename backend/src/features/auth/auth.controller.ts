@@ -20,14 +20,12 @@ interface ILoginRequest {
 const authenticatedUser = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
   try {
 
-    const user = request.user;
+    const { userId, firstName, lastName, email } = request.user as User;
 
     response.status(httpStatusCode.OK).json({
       message: "Authenticated user",
       user: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email
+        userId, firstName, lastName, email
       }
     });
 

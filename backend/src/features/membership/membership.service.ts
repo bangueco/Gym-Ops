@@ -10,8 +10,8 @@ const getMembershipById = async (membershipId: number) => {
   return await membershipRepository.getMembershipById(membershipId);
 };
 
-const createMembership = async (membershipName: string, membershipLength: number) => {
-  return await membershipRepository.createMembership(membershipName, membershipLength);
+const createMembership = async (membershipName: string, membershipLength: number, createdBy: number) => {
+  return await membershipRepository.createMembership(membershipName, membershipLength, createdBy);
 };
 
 const updateMembership = async (membershipId: number, membershipData: Partial<Membership>) => {

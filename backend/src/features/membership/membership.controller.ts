@@ -23,8 +23,8 @@ const getMembershipById = async (request: Request, response: Response, next: Nex
 
 const createMembership = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const { membershipName, membershipLength } = request.body;
-    const membership = await membershipService.createMembership(membershipName, membershipLength);
+    const { membershipName, membershipLength, createdBy } = request.body;
+    const membership = await membershipService.createMembership(membershipName, membershipLength, createdBy);
     response.status(httpStatusCode.CREATED).json({message: "Membership created successfully", membership});
   } catch (error) {
     next(error);

@@ -11,7 +11,7 @@ const getMemberById = async (memberId: number) => {
   return await memberRepository.getMemberById(memberId);
 };
 
-const createMember = async (firstName: string, lastName: string, email: string, phoneNumber: string, membershipId: number) => {
+const createMember = async (firstName: string, lastName: string, email: string, phoneNumber: string, membershipId: number, createdBy: number) => {
 
   const emailExists = await memberRepository.getMemberByEmail(email);
 
@@ -20,7 +20,7 @@ const createMember = async (firstName: string, lastName: string, email: string, 
   }
 
   if (membershipId === 0) {
-    return await memberRepository.createMember(firstName, lastName, email, phoneNumber, null, null, null);
+    return await memberRepository.createMember(firstName, lastName, email, phoneNumber, null, null, null, createdBy);
   }
 
   const membership = await membershipService.getMembershipById(membershipId);
@@ -33,7 +33,7 @@ const createMember = async (firstName: string, lastName: string, email: string, 
   const membershipEnd = new Date();
   membershipEnd.setDate(membershipStart.getDate() + membership.membershipLength + 1);
 
-  return await memberRepository.createMember(firstName, lastName, email, phoneNumber, membershipId, membershipStart, membershipEnd);
+  return await memberRepository.createMember(firstName, lastName, email, phoneNumber, membershipId, membershipStart, membershipEnd, createdBy);
 };
 
 const updateMember = async (memberId: number, memberData: Partial<Member>) => {

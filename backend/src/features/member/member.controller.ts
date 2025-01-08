@@ -22,8 +22,8 @@ const getMemberById = async (request: Request, response: Response, next: NextFun
 
 const createMember = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const { firstName, lastName, email, phoneNumber, membershipId } = request.body;
-    const member = await memberService.createMember(firstName, lastName, email, phoneNumber, membershipId);
+    const { firstName, lastName, email, phoneNumber, membershipId, createdBy } = request.body;
+    const member = await memberService.createMember(firstName, lastName, email, phoneNumber, membershipId, createdBy);
     response.status(201).json({ message: "Member created successfully", member });
   } catch (error) {
     next(error);

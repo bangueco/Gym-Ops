@@ -35,7 +35,9 @@ export const membership = z.object({
     .max(30, { message: "Membership name must be at most 30 characters long." }),
 
   membershipLength: z.number()
-    .min(1, { message: "Membership length must be at least 1 day." })
+    .min(1, { message: "Membership length must be at least 1 day." }),
+    
+  createdBy: z.number()
 });
 
 export const member = z.object({
@@ -56,5 +58,7 @@ export const member = z.object({
     .min(11, { message: "Phone number must be at least 11 characters long." })
     .max(11, { message: "Phone number must be at most 11 characters long." }),
 
-  membershipId: z.number({ message: "Please select membership type." })
+  membershipId: z.number({ message: "Please select membership type." }),
+
+  createdBy: z.number()
 });
