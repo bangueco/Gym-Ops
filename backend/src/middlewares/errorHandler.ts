@@ -1,6 +1,7 @@
 import { ApiError, ValidationError } from "@lib/utils/appError";
 import httpStatusCode from "@lib/utils/httpStatusCode";
 import logger from "@lib/utils/logger";
+import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
 import { NextFunction, Request, Response } from "express";
 import { TokenExpiredError } from "jsonwebtoken";
 import { ZodError, ZodIssue } from "zod";
@@ -52,6 +53,10 @@ const errorHandler = (error: unknown, _request: Request, response: Response, nex
   } else if (error instanceof TokenExpiredError) {
     response.status(httpStatusCode.UNAUTHORIZED).json({message: "Token expired."});
     return;
+  } else if (error instanceof PrismaClientKnownRequestError) {
+    response.status(httpStatusCode.BAD_REQUEST).json({message: error.message});
+  } else if (error instanceof PrismaClientValidationError) {
+    response.status(httpStatusCode.BAD_REQUEST).json({message: error.message});
   }
 
   // TODO: Add TokenExpiredError handler here
