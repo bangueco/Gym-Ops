@@ -1,12 +1,12 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoginSchema, RegisterSchema } from "@/schemas";
-import { AuthenticationResponse } from "@/types";
+import { AuthenticatedUserResponse, AuthenticationResponse } from "@/types";
 import authAxios from "@/lib/axios";
 
 export function authQueryOptions() {
   return queryOptions({
     queryKey: ["auth"],
-    queryFn: async () => (await authAxios.get("/auth")).data,
+    queryFn: async () => (await authAxios.get("/auth")).data as AuthenticatedUserResponse,
   })
 }
 

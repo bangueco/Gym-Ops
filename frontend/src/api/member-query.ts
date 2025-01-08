@@ -20,8 +20,8 @@ export function useAddMemberMutation() {
 
   return useMutation({
     mutationKey: ["addMember"],
-    mutationFn: async ({ firstName, lastName, email, phoneNumber, membershipId }: InputMemberSchema) => {
-      return (await authAxios.post('/members', {firstName, lastName, email, phoneNumber, membershipId: parseInt(membershipId)})).data as MemberResponse
+    mutationFn: async ({ firstName, lastName, email, phoneNumber, membershipId, createdBy }: InputMemberSchema) => {
+      return (await authAxios.post('/members', {firstName, lastName, email, phoneNumber, membershipId: parseInt(membershipId), createdBy})).data as MemberResponse
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})
