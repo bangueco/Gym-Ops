@@ -1,4 +1,5 @@
 export type User = {
+  userId: number
   firstName: string
   lastName: string
   email: string
@@ -13,18 +14,25 @@ export type Member = {
   membershipId?: number
   membershipStart?: Date
   membershipEnd?: Date
+  createdBy: number
 }
 
 export type Membership = {
   membershipId: number
   membershipName: string
   membershipLength: number
+  createdBy: number
 }
 
 export type AuthenticationResponse = {
   message: string
   user: User
   token: string
+}
+
+export type AuthenticatedUserResponse = {
+  message: string
+  user: User
 }
 
 export type MemberResponse = {

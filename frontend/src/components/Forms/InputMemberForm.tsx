@@ -25,11 +25,13 @@ import toast from "react-hot-toast"
 import { AxiosError } from "axios"
 import { useMembershipQuery } from "@/api/membership-query"
 import { router } from "@/router"
+import { useAuthQuery } from "@/api/auth-query"
 
 export default function InputMemberForm() {
 
   const addMemberMutation = useAddMemberMutation()
   const { data, isLoading, isError } = useMembershipQuery()
+  const authQuery = useAuthQuery()
 
   const form = useForm<z.infer<typeof inputMemberSchema>>({
     resolver: zodResolver(inputMemberSchema),
@@ -44,7 +46,7 @@ export default function InputMemberForm() {
 
   async function onSubmit(values: z.infer<typeof inputMemberSchema>) {
     try {
-      const addMember = await addMemberMutation.mutateAsync(values)
+      const addMember = await addMemberMutation.mutateAsync({ ...values, createdBy: authQuery.data?.user.userId ?? 0 })
       toast.success(addMember.message)
       form.reset()
       router.invalidate()

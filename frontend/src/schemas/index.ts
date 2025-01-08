@@ -58,7 +58,9 @@ export const inputMemberSchema = z.object({
     .min(11, { message: "Phone number must be at least 11 characters long." })
     .max(11, { message: "Phone number must be at most 11 characters long." }),
 
-  membershipId: z.string({ message: "Please select membership type." })
+  membershipId: z.string({ message: "Please select membership type." }),
+
+  createdBy: z.number()
 });
 
 export const inputMembershipSchema = z.object({
@@ -67,7 +69,9 @@ export const inputMembershipSchema = z.object({
     .max(30, { message: "Membership name must be at most 30 characters long." }),
 
   membershipLength: z.coerce.number()
-    .min(1, { message: "Membership length must be at least 1 day." })
+    .min(1, { message: "Membership length must be at least 1 day." }),
+
+  createdBy: z.number()
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;

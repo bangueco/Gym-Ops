@@ -17,10 +17,12 @@ import toast from "react-hot-toast"
 import { AxiosError } from "axios"
 import { useAddMembershipMutation } from "@/api/membership-query"
 import { router } from "@/router"
+import { useAuthQuery } from "@/api/auth-query"
 
 export default function InputMembershipForm() {
 
   const addMembershipMutation = useAddMembershipMutation()
+  const authQuery = useAuthQuery()
 
   const form = useForm<z.infer<typeof inputMembershipSchema>>({
     resolver: zodResolver(inputMembershipSchema),
@@ -31,9 +33,10 @@ export default function InputMembershipForm() {
   })
 
   async function onSubmit(values: z.infer<typeof inputMembershipSchema>) {
+    console.log("FERAK")
     try {
       const { membershipName, membershipLength } = values
-      const addMembership = await addMembershipMutation.mutateAsync({ membershipName, membershipLength })
+      const addMembership = await addMembershipMutation.mutateAsync({ membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0 })
       toast.success(addMembership.message)
       form.reset()
       router.invalidate()
