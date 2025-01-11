@@ -1,10 +1,10 @@
 import { ApiError } from "@lib/utils/appError";
 import memberRepository from "./member.repository";
-import { Member } from "@prisma/client";
+import { Member, Prisma } from "@prisma/client";
 import { membershipRepository, membershipService } from "@features/membership";
 
-const getMembers = async () => {
-  return await memberRepository.getMembers();
+const getMembers = async (filter: Prisma.MemberWhereInput) => {
+  return await memberRepository.getMembers(filter);
 };
 
 const getMemberById = async (memberId: number) => {

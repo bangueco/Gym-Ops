@@ -1,8 +1,11 @@
 import prisma from "@lib/prismaClient";
-import { Member } from "@prisma/client";
+import { Member, Prisma } from "@prisma/client";
 
-const getMembers = async () => {
-  return await prisma.member.findMany({ orderBy: {memberId: "asc"} });
+const getMembers = async (filter: Prisma.MemberWhereInput | undefined) => {
+  return await prisma.member.findMany({
+    where: filter,
+    orderBy: {memberId: "asc"}
+  });
 };
 
 const getMemberById = async (memberId: number) => {

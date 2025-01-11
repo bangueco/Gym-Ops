@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from "express";
 
 const getAllMembers = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const members = await memberService.getMembers();
+    const { createdBy } = request.query;
+    const members = await memberService.getMembers({createdBy: createdBy ? parseInt(createdBy as string) : undefined});
     response.status(200).json(members);
   } catch (error) {
     next(error);
