@@ -66,6 +66,10 @@ const updateMember = async (memberId: number, memberData: Partial<Member>) => {
     throw new ApiError(404, "Membership not found!");
   }
 
+  if (memberData.membershipId === membership.membershipId) {
+    return await memberRepository.updateMember(memberId, memberData);
+  }
+
   const membershipStart = new Date();
   const membershipEnd = new Date();
   membershipEnd.setDate(membershipStart.getDate() + membership.membershipLength + 1);
