@@ -35,8 +35,8 @@ export function useUpdateMemberMutation() {
 
   return useMutation({
     mutationKey: ["updateMember"],
-    mutationFn: async ({ memberId, firstName, lastName, email, phoneNumber, membershipId }: Partial<Member>) => {
-      return (await authAxios.put(`/members/${memberId}`, {firstName, lastName, email, phoneNumber, membershipId})).data as MemberResponse
+    mutationFn: async ({ memberId, firstName, lastName, email, phoneNumber, membershipId, createdBy }: Partial<Member>) => {
+      return (await authAxios.put(`/members/${memberId}`, {firstName, lastName, email, phoneNumber, membershipId, createdBy})).data as MemberResponse
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})

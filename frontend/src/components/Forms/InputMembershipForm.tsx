@@ -29,11 +29,11 @@ export default function InputMembershipForm() {
     defaultValues: {
       membershipName: "",
       membershipLength: 0,
+      createdBy: authQuery.data?.user.userId
     },
   })
 
   async function onSubmit(values: z.infer<typeof inputMembershipSchema>) {
-    console.log("FERAK")
     try {
       const { membershipName, membershipLength } = values
       const addMembership = await addMembershipMutation.mutateAsync({ membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0 })

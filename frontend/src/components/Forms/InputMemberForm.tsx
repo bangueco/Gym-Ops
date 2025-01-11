@@ -41,6 +41,7 @@ export default function InputMemberForm() {
       email: "",
       phoneNumber: "",
       membershipId: undefined,
+      createdBy: authQuery.data?.user.userId
     },
   })
 

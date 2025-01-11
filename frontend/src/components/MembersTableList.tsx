@@ -22,9 +22,11 @@ import { AxiosError } from "axios"
 import { useState } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { router } from "@/router"
+import { useAuthQuery } from "@/api/auth-query"
 
 export default function MembersTableList() {
 
+  const authQuery = useAuthQuery()
   const memberQuery = useMemberQuery()
   const membershipQuery = useMembershipQuery()
   const updateMemberMutation = useUpdateMemberMutation()
@@ -46,6 +48,7 @@ export default function MembersTableList() {
       email: "",
       phoneNumber: "",
       membershipId: undefined,
+      createdBy: authQuery.data?.user.userId
     },
   })
 
@@ -57,7 +60,8 @@ export default function MembersTableList() {
         lastName: values.lastName,
         email: values.email,
         phoneNumber: values.phoneNumber,
-        membershipId: parseInt(values.membershipId)
+        membershipId: parseInt(values.membershipId),
+        createdBy: authQuery.data?.user.userId
       })
       toast.success(updateMember.message)
       form.reset()
@@ -88,7 +92,9 @@ export default function MembersTableList() {
         <TableBody>
           {
             memberQuery.data && memberQuery.data.length === 0 ? (
-              <TableCell colSpan={7} className="text-center py-4">No members found</TableCell>
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">No members found</TableCell>
+              </TableRow>
             ) : (
               memberQuery.data?.map((member) => (
                 <TableRow key={member.memberId}>

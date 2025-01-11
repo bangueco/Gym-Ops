@@ -21,9 +21,11 @@ import { AxiosError } from "axios";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { router } from "@/router";
+import { useAuthQuery } from "@/api/auth-query";
 
 export default function MembershipsTableList() {
 
+  const authQuery = useAuthQuery()
   const updateMembershipMutation = useUpdateMembershipMutation()
   const deleteMembershipMutation = useDeleteMembershipMutation()
   const { data, error, isLoading } = useMembershipQuery()
@@ -32,13 +34,16 @@ export default function MembershipsTableList() {
   const [membershipId, setMembershipId] = useState<number>(0)
 
   const form = useForm<z.infer<typeof inputMembershipSchema>>({
-    resolver: zodResolver(inputMembershipSchema)
+    resolver: zodResolver(inputMembershipSchema),
+    defaultValues: {
+      createdBy: authQuery.data?.user.userId
+    }
   })
 
   async function onSubmit(values: z.infer<typeof inputMembershipSchema>) {
     try {
       const { membershipName, membershipLength } = values
-      const updateMembership = await updateMembershipMutation.mutateAsync({ membershipId, membershipName, membershipLength })
+      const updateMembership = await updateMembershipMutation.mutateAsync({ membershipId, membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0 })
       toast.success(updateMembership.message)
       form.reset()
       router.invalidate()

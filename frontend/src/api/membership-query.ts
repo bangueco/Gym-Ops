@@ -45,9 +45,8 @@ export function useUpdateMembershipMutation() {
 
   return useMutation({
     mutationKey: ["updateMembership"],
-    mutationFn: async ({ membershipId, membershipName, membershipLength }: Membership) => {
-      console.log(membershipId, membershipName, membershipLength)
-      return (await authAxios.put(`/memberships/${membershipId}`, { membershipName, membershipLength })).data as MembershipResponse
+    mutationFn: async ({ membershipId, membershipName, membershipLength, createdBy }: Membership) => {
+      return (await authAxios.put(`/memberships/${membershipId}`, { membershipName, membershipLength, createdBy })).data as MembershipResponse
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["memberships"]})
