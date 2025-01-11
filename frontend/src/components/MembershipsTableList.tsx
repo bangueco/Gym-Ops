@@ -28,7 +28,7 @@ export default function MembershipsTableList() {
   const authQuery = useAuthQuery()
   const updateMembershipMutation = useUpdateMembershipMutation()
   const deleteMembershipMutation = useDeleteMembershipMutation()
-  const { data, error, isLoading } = useMembershipQuery()
+  const { data, error, isLoading } = useMembershipQuery(authQuery.data?.user.userId)
 
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [membershipId, setMembershipId] = useState<number>(0)

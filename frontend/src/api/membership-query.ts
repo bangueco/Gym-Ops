@@ -3,15 +3,15 @@ import { InputMembershipSchema } from "@/schemas";
 import { Membership, MembershipResponse } from "@/types";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-function membershipQueryOptions() {
+function membershipQueryOptions(createdBy: number | undefined) {
   return queryOptions({
     queryKey: ["memberships"],
-    queryFn: async () => (await authAxios.get("/memberships")).data as Membership[] | null,
+    queryFn: async () => (await authAxios.get(`/memberships?createdBy=${createdBy}`)).data as Membership[] | null,
   })
 }
 
-export function useMembershipQuery() {
-  return useQuery(membershipQueryOptions());
+export function useMembershipQuery(createdBy: number | undefined) {
+  return useQuery(membershipQueryOptions(createdBy));
 }
 
 export function useMembershipByIdQuery(membershipId: number) {

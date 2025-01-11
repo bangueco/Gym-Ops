@@ -28,7 +28,7 @@ export default function MembersTableList() {
 
   const authQuery = useAuthQuery()
   const memberQuery = useMemberQuery(authQuery.data?.user.userId)
-  const membershipQuery = useMembershipQuery()
+  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
   const updateMemberMutation = useUpdateMemberMutation()
   const deleteMemberMutation = useDeleteMemberMutation()
 

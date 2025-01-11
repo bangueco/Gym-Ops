@@ -29,9 +29,9 @@ import { useAuthQuery } from "@/api/auth-query"
 
 export default function InputMemberForm() {
 
-  const addMemberMutation = useAddMemberMutation()
-  const { data, isLoading, isError } = useMembershipQuery()
   const authQuery = useAuthQuery()
+  const addMemberMutation = useAddMemberMutation()
+  const { data, isLoading, isError } = useMembershipQuery(authQuery.data?.user.userId)
 
   const form = useForm<z.infer<typeof inputMemberSchema>>({
     resolver: zodResolver(inputMemberSchema),

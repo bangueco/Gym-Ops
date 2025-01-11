@@ -4,7 +4,8 @@ import httpStatusCode from "@lib/utils/httpStatusCode";
 
 const getAllMemberships = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const memberships = await membershipService.getMemberships();
+    const { createdBy } = request.query;
+    const memberships = await membershipService.getMemberships({createdBy: createdBy ? parseInt(createdBy as string) : undefined});
     response.status(httpStatusCode.OK).json(memberships);
   } catch (error) {
     next(error);

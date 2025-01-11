@@ -1,8 +1,11 @@
 import prisma from "@lib/prismaClient";
-import { Membership } from "@prisma/client";
+import { Membership, Prisma } from "@prisma/client";
 
-const getMemberships = async () => {
-  return await prisma.membership.findMany({orderBy: {membershipId: "asc"}});
+const getMemberships = async (filter: Prisma.MembershipWhereInput) => {
+  return await prisma.membership.findMany({
+    where: filter,
+    orderBy: {membershipId: "asc"}
+  });
 };
 
 const getMembershipById = async (membershipId: number) => {
