@@ -4,7 +4,10 @@ import { Membership, Prisma } from "@prisma/client";
 const getMemberships = async (filter: Prisma.MembershipWhereInput) => {
   return await prisma.membership.findMany({
     where: filter,
-    orderBy: {membershipId: "asc"}
+    orderBy: {membershipId: "asc"},
+    include: {
+      members: true
+    }
   });
 };
 
