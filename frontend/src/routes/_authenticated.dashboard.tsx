@@ -1,3 +1,6 @@
+import { useAuthQuery } from '@/api/auth-query'
+import { useMemberQuery } from '@/api/member-query'
+import { useMembershipQuery } from '@/api/membership-query'
 import RecentMembersTableList from '@/components/RecentMembersTableList'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -6,17 +9,22 @@ export const Route = createFileRoute('/_authenticated/dashboard')({
 })
 
 function DashboardPage() {
+
+  const authQuery = useAuthQuery()
+  const memberQuery = useMemberQuery(authQuery.data?.user.userId)
+  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
+
   return (
     <div>
       <h1 className="text-4xl mb-12">Dashboard</h1>
       <div className="flex gap-3">
         <div className="p-3 border-primary border-2 rounded-md w-60">
           <h1 className="text-md font-extrabold">TOTAL MEMBERS</h1>
-          <p>2000</p>
+          <p>{memberQuery.data?.totalMembers ?? 0}</p>
         </div>
         <div className="p-3 border-primary border-2 rounded-md w-60">
           <h1 className="text-md font-extrabold">ACTIVE MEMBERSHIPS</h1>
-          <p>150</p>
+          <p>{membershipQuery.data?.reduce((count, membership) => count + membership.members.length, 0)}</p>
         </div>
         <div className="p-3 border-primary border-2 rounded-md w-60">
           <h1 className="text-md font-extrabold">TOTAL REVENUE</h1>

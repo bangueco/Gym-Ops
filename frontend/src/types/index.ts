@@ -22,6 +22,7 @@ export type Membership = {
   membershipName: string
   membershipLength: number
   createdBy: number
+  members: Member[]
 }
 
 export type AuthenticationResponse = {
@@ -36,6 +37,7 @@ export type AuthenticatedUserResponse = {
 }
 
 export type MembersResponse = {
+  totalMembers: number
   members: Member[]
   hasNextPage: boolean
 }

@@ -55,6 +55,7 @@ export function useUpdateMemberMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})
       queryClient.invalidateQueries({queryKey: ["recent-members"]})
+      queryClient.invalidateQueries({queryKey: ["memberships"]})
     }
   })
 }
@@ -71,6 +72,7 @@ export function useDeleteMemberMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})
       queryClient.invalidateQueries({queryKey: ["recent-members"]})
+      queryClient.invalidateQueries({queryKey: ["memberships"]})
     }
   })
 }
