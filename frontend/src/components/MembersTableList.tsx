@@ -1,11 +1,3 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { useDeleteMemberMutation, useMemberQuery, useUpdateMemberMutation } from "@/api/member-query"
 import { useMembershipQuery } from "@/api/membership-query"
 import DropDownMenuAction from "./DropDownMenuAction"
@@ -23,22 +15,21 @@ import { useState } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { router } from "@/router"
 import { useAuthQuery } from "@/api/auth-query"
+import { ColumnDef } from "@tanstack/react-table"
+import { Member } from "@/types"
+import { DataTable } from "./ui/data-table"
 
 export default function MembersTableList() {
 
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+  const [memberId, setMemberId] = useState<number>(0)
+  const [page, setPage] = useState<number>(1)
+
   const authQuery = useAuthQuery()
-  const memberQuery = useMemberQuery(authQuery.data?.user.userId)
+  const memberQuery = useMemberQuery(authQuery.data?.user.userId, page, 10)
   const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
   const updateMemberMutation = useUpdateMemberMutation()
   const deleteMemberMutation = useDeleteMemberMutation()
-
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
-  const [memberId, setMemberId] = useState<number>(0)
-
-  const getMembershipName = (membershipId: number) => {
-    const membership = membershipQuery.data?.find((membership) => membership.membershipId === membershipId)
-    return membership?.membershipName ?? "Expired"
-  }
 
   const form = useForm<z.infer<typeof inputMemberSchema>>({
     resolver: zodResolver(inputMemberSchema),
@@ -75,71 +66,95 @@ export default function MembersTableList() {
     }
   }
 
+  const columns: ColumnDef<Member>[] = [
+    {
+      accessorKey: "firstName",
+      header: "First Name",
+    },
+    {
+      accessorKey: "lastName",
+      header: "Last Name",
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "phoneNumber",
+      header: "Phone Number",
+    },
+    {
+      accessorKey: "membershipId",
+      header: "Membership Status",
+      cell: ({ row }) => {
+        const membership = membershipQuery.data?.find(m => m.membershipId === row.getValue("membershipId"))
+
+        return <div>{membership?.membershipName ?? "Inactive"}</div>
+      }
+    },
+    {
+      accessorKey: "membershipStart",
+      header: "Membership Start",
+      cell: ({ row }) => {
+        const membershipStart: Date = row.getValue("membershipStart")
+
+        return <div>{membershipStart ? (new Date(membershipStart).toLocaleDateString()) : "N/A"}</div>
+      }
+    },
+    {
+      accessorKey: "membershipEnd",
+      header: "Membership End",
+      cell: ({ row }) => {
+        const membershipEnd: Date = row.getValue("membershipEnd")
+
+        return <div>{membershipEnd ? (new Date(membershipEnd).toLocaleDateString()) : "N/A"}</div>
+      }
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <DropDownMenuAction
+            editItem={() => {
+              setMemberId(row.original.memberId)
+              setEditDialogOpen(true)
+              form.setValue('firstName', row.original.firstName)
+              form.setValue('lastName', row.original.lastName)
+              form.setValue('email', row.original.email)
+              form.setValue('phoneNumber', row.original.phoneNumber)
+              form.setValue('membershipId', row.original.membershipId?.toString() || "0")
+            }}
+            deleteItem={async () => {
+              await deleteMemberMutation.mutateAsync(row.original.memberId)
+              toast.success("Member deleted successfully")
+            }}
+          />
+        )
+      }
+    }
+  ]
+
   return (
-    <>
-      <Table className="border-2 border-gray-200 rounded-md">
-        <TableHeader>
-          <TableRow>
-            <TableHead>First Name</TableHead>
-            <TableHead>Last Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone Number</TableHead>
-            <TableHead>Membership Status</TableHead>
-            <TableHead>Membership Start</TableHead>
-            <TableHead>Membership End</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {
-            memberQuery.data && memberQuery.data.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-4">No members found</TableCell>
-              </TableRow>
-            ) : (
-              memberQuery.data?.map((member) => (
-                <TableRow key={member.memberId}>
-                  <TableCell>{member.firstName}</TableCell>
-                  <TableCell>{member.lastName}</TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell>{member.phoneNumber}</TableCell>
-                  <TableCell>
-                    {
-                      member.membershipId ? (getMembershipName(member.membershipId)) : "Inactive"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      member.membershipStart ? (new Date(member.membershipStart).toLocaleDateString()) : "N/A"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      member.membershipEnd ? (new Date(member.membershipEnd).toLocaleDateString()) : "N/A"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    <DropDownMenuAction
-                      editItem={() => {
-                        setEditDialogOpen(true)
-                        setMemberId(member.memberId)
-                        form.setValue('firstName', member.firstName)
-                        form.setValue('lastName', member.lastName)
-                        form.setValue('email', member.email)
-                        form.setValue('phoneNumber', member.phoneNumber)
-                        form.setValue('membershipId', member.membershipId?.toString() || "0")
-                      }}
-                      deleteItem={async () => {
-                        await deleteMemberMutation.mutateAsync(member.memberId)
-                        toast.success("Member deleted successfully")
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            )
-          }
-        </TableBody>
-      </Table>
+    <div>
+      <DataTable columns={columns} data={memberQuery.data?.members ?? []} />
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage(page + 1)}
+          disabled={memberQuery.data?.hasNextPage === false}
+        >
+          Next
+        </Button>
+      </div>
       <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -260,6 +275,6 @@ export default function MembersTableList() {
           </Form>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }
