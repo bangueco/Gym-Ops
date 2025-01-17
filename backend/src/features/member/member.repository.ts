@@ -1,10 +1,12 @@
 import prisma from "@lib/prismaClient";
 import { Member, Prisma } from "@prisma/client";
 
-const getMembers = async (filter: Prisma.MemberWhereInput | undefined) => {
+const getMembers = async (filter: Prisma.MemberWhereInput | undefined, page: number | undefined, pageSize: number | undefined, descending: boolean | undefined) => {
   return await prisma.member.findMany({
+    skip: page && pageSize ? (page - 1) * pageSize : 0,
+    take: pageSize || 5,
     where: filter,
-    orderBy: {memberId: "asc"}
+    orderBy: {memberId: descending ? "desc" : "asc"}
   });
 };
 

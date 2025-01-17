@@ -3,8 +3,8 @@ import memberRepository from "./member.repository";
 import { Member, Prisma } from "@prisma/client";
 import { membershipRepository, membershipService } from "@features/membership";
 
-const getMembers = async (filter: Prisma.MemberWhereInput) => {
-  return await memberRepository.getMembers(filter);
+const getMembers = async (filter: Prisma.MemberWhereInput, page: number | undefined, pageSize: number | undefined, descending: boolean | undefined) => {
+  return await memberRepository.getMembers(filter, page, pageSize, descending);
 };
 
 const getMemberById = async (memberId: number) => {

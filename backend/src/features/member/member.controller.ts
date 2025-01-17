@@ -3,9 +3,24 @@ import { NextFunction, Request, Response } from "express";
 
 const getAllMembers = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const { createdBy } = request.query;
-    const members = await memberService.getMembers({createdBy: createdBy ? parseInt(createdBy as string) : undefined});
-    response.status(200).json(members);
+    const { createdBy, page, pageSize, descending } = request.query;
+    const members = await memberService.getMembers(
+      {createdBy: createdBy ? parseInt(createdBy as string) : undefined},
+      page ? parseInt(page as string) : undefined,
+      pageSize ? parseInt(pageSize as string) : undefined,
+      descending === "true"
+    );
+    const membersSecondPage = await memberService.getMembers(
+      {createdBy: createdBy ? parseInt(createdBy as string) : undefined},
+      page ? parseInt(page as string) + 1 : undefined,
+      pageSize ? parseInt(pageSize as string) : undefined,
+      descending === "true"
+    );
+
+    response.status(200).json({
+      members,
+      hasNextPage: membersSecondPage.length > 0
+    });
   } catch (error) {
     next(error);
   }
