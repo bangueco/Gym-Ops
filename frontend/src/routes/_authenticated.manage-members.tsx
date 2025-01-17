@@ -11,7 +11,7 @@ function ManageMembers() {
     <div>
       <h1 className="text-4xl mb-6">Manage Members</h1>
       <InputMemberForm />
-      <h1 className="text-lg mb-6 mt-12">Member&apos;s List</h1>
+      <h1 className="text-lg mt-8">Member&apos;s List</h1>
       <MembersTableList />
     </div>
   )

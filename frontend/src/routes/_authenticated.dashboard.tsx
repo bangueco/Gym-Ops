@@ -1,3 +1,4 @@
+import RecentMembersTableList from '@/components/RecentMembersTableList'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/dashboard')({
@@ -24,6 +25,7 @@ function DashboardPage() {
       </div>
       <div className="mt-12">
         <h1>Recent members</h1>
+        <RecentMembersTableList />
       </div>
       <div className="mt-12">
         <h1>Expiring memberships</h1>

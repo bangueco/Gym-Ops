@@ -35,6 +35,11 @@ export type AuthenticatedUserResponse = {
   user: User
 }
 
+export type MembersResponse = {
+  members: Member[]
+  hasNextPage: boolean
+}
+
 export type MemberResponse = {
   message: string
   member: Member
