@@ -66,7 +66,7 @@ const updateMember = async (memberId: number, memberData: Partial<Member>) => {
     throw new ApiError(404, "Membership not found!");
   }
 
-  if (memberData.membershipId === membership.membershipId) {
+  if (member.membershipId === memberData.membershipId) {
     return await memberRepository.updateMember(memberId, memberData);
   }
 
