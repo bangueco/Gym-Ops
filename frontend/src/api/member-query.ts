@@ -1,17 +1,30 @@
 import authAxios from "@/lib/axios";
 import { InputMemberSchema } from "@/schemas";
-import { Member, MemberResponse } from "@/types";
-import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Member, MemberResponse, MembersResponse } from "@/types";
+import { keepPreviousData, queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-function memberQueryOptions(createdBy: number | undefined) {
+function memberQueryOptions(createdBy: number | undefined, page: number | undefined, pageSize: number | undefined) {
   return queryOptions({
-    queryKey: ["members"],
-    queryFn: async () => (await authAxios.get(`/members?createdBy=${createdBy}`)).data as Member[] | null,
+    queryKey: ["members", createdBy, page, pageSize],
+    queryFn: async () => (await authAxios.get(`/members?createdBy=${createdBy}&page=${page}&pageSize=${pageSize}`)).data as MembersResponse | null,
+    placeholderData: keepPreviousData
   })
 }
 
-export function useMemberQuery(createdBy: number | undefined) {
-  return useQuery(memberQueryOptions(createdBy))
+function recentMemberQueryOptions(createdBy: number | undefined, page: number | undefined, pageSize: number | undefined) {
+  return queryOptions({
+    queryKey: ["recent-members", createdBy, page, pageSize],
+    queryFn: async () => (await authAxios.get(`/members?createdBy=${createdBy}&page=${page}&pageSize=${pageSize}&descending=true`)).data as MembersResponse | null,
+    placeholderData: keepPreviousData
+  })
+}
+
+export function useMemberQuery(createdBy: number | undefined, page: number | undefined = 1, pageSize: number | undefined = 5) {
+  return useQuery(memberQueryOptions(createdBy, page, pageSize))
+}
+
+export function useRecentMemberQuery(createdBy: number | undefined, page: number | undefined = 1, pageSize: number | undefined = 5) {
+  return useQuery(recentMemberQueryOptions(createdBy, page, pageSize))
 }
 
 export function useAddMemberMutation() {
@@ -25,6 +38,7 @@ export function useAddMemberMutation() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})
+      queryClient.invalidateQueries({queryKey: ["recent-members"]})
     }
   })
 }
@@ -40,6 +54,7 @@ export function useUpdateMemberMutation() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})
+      queryClient.invalidateQueries({queryKey: ["recent-members"]})
     }
   })
 }
@@ -55,6 +70,7 @@ export function useDeleteMemberMutation() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["members"]})
+      queryClient.invalidateQueries({queryKey: ["recent-members"]})
     }
   })
 }
