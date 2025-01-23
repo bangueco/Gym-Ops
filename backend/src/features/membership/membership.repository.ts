@@ -19,8 +19,8 @@ const getMembershipById = async (membershipId: number) => {
   });
 };
 
-const createMembership = async (membershipName: string, membershipLength: number, createdBy: number) => {
-  return await prisma.membership.create({data: {membershipName, membershipLength, createdBy}});
+const createMembership = async (membershipName: string, membershipLength: number, createdBy: number, membershipFee: number) => {
+  return await prisma.membership.create({data: {membershipName, membershipLength, createdBy, membershipFee}});
 };
 
 const updateMembership = async (membershipId: number, membershipData: Partial<Membership>) => {

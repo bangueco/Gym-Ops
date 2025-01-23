@@ -35,6 +35,7 @@ model Membership {
   membershipId Int @id @default(autoincrement())
   membershipName String
   membershipLength Int
+  membershipFee Int @default(0)
   members Member[]
   createdBy Int
   user User @relation(fields: [createdBy], references: [userId])
