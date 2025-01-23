@@ -42,8 +42,8 @@ export default function MembershipsTableList() {
 
   async function onSubmit(values: z.infer<typeof inputMembershipSchema>) {
     try {
-      const { membershipName, membershipLength } = values
-      const updateMembership = await updateMembershipMutation.mutateAsync({ membershipId, membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0 })
+      const { membershipName, membershipLength, membershipFee } = values
+      const updateMembership = await updateMembershipMutation.mutateAsync({ membershipId, membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0, membershipFee })
       toast.success(updateMembership.message)
       form.reset()
       router.invalidate()

@@ -21,6 +21,7 @@ export type Membership = {
   membershipId: number
   membershipName: string
   membershipLength: number
+  membershipFee: number
   createdBy: number
   members?: Member[]
 }

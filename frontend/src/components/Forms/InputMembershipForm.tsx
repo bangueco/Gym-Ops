@@ -35,8 +35,8 @@ export default function InputMembershipForm() {
 
   async function onSubmit(values: z.infer<typeof inputMembershipSchema>) {
     try {
-      const { membershipName, membershipLength } = values
-      const addMembership = await addMembershipMutation.mutateAsync({ membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0 })
+      const { membershipName, membershipLength, membershipFee } = values
+      const addMembership = await addMembershipMutation.mutateAsync({ membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0, membershipFee })
       toast.success(addMembership.message)
       form.reset()
       router.invalidate()
@@ -74,6 +74,19 @@ export default function InputMembershipForm() {
                 <FormLabel>Membership Length</FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="Enter membership length" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="membershipFee"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Membership Fee</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Enter membership cost" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>

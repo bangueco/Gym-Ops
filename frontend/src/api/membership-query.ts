@@ -27,8 +27,8 @@ export function useAddMembershipMutation() {
 
   return useMutation({
     mutationKey: ["addMembership"],
-    mutationFn: async ({ membershipName, membershipLength, createdBy }: InputMembershipSchema) => {
-      return (await authAxios.post('/memberships', { membershipName, membershipLength, createdBy })).data as MembershipResponse
+    mutationFn: async ({ membershipName, membershipLength, createdBy, membershipFee }: InputMembershipSchema) => {
+      return (await authAxios.post('/memberships', { membershipName, membershipLength, createdBy, membershipFee })).data as MembershipResponse
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["memberships"]})
