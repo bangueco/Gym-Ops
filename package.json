@@ -1,0 +1,23 @@
+{
+  "name": "gym-ops",
+  "version": "0.1",
+  "description": "## Project Overview My personal use express monolith repo. This repository is a monolith template with an Express.js backend. The frontend is flexible and allows you to choose any technology stack that fits your needs.",
+  "private": true,
+  "scripts": {
+    "install:yarn": "npm install -g yarn",
+    "init:frontend": "cd frontend && yarn install",
+    "init:backend": "cd backend && yarn install",
+    "init": "yarn install:yarn && yarn init:frontend && yarn init:backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bangueco/Gym-Ops.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bangueco/Gym-Ops/issues"
+  },
+  "homepage": "https://github.com/bangueco/Gym-Ops#readme"
+}
