@@ -1,13 +1,4 @@
-import { useDeleteMembershipMutation, useMembershipQuery, useUpdateMembershipMutation } from "@/api/membership-query"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
+import { useDeleteMembershipMutation, useUpdateMembershipMutation } from "@/api/membership-query"
 import toast from "react-hot-toast";
 import DropDownMenuAction from "./DropDownMenuAction";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -22,13 +13,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "./ui/input";
 import { router } from "@/router";
 import { useAuthQuery } from "@/api/auth-query";
+import { Membership } from "@/types";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "./ui/data-table";
 
-export default function MembershipsTableList() {
+type MembershipsTableListProps = {
+  memberships: Membership[] | undefined
+}
+
+export default function MembershipsTableList({ memberships }: MembershipsTableListProps) {
 
   const authQuery = useAuthQuery()
   const updateMembershipMutation = useUpdateMembershipMutation()
   const deleteMembershipMutation = useDeleteMembershipMutation()
-  const { data, error, isLoading } = useMembershipQuery(authQuery.data?.user.userId)
 
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [membershipId, setMembershipId] = useState<number>(0)
@@ -43,6 +40,7 @@ export default function MembershipsTableList() {
   async function onSubmit(values: z.infer<typeof inputMembershipSchema>) {
     try {
       const { membershipName, membershipLength, membershipFee } = values
+      console.log(values)
       const updateMembership = await updateMembershipMutation.mutateAsync({ membershipId, membershipName, membershipLength, createdBy: authQuery.data?.user.userId ?? 0, membershipFee })
       toast.success(updateMembership.message)
       form.reset()
@@ -56,50 +54,44 @@ export default function MembershipsTableList() {
     }
   }
 
-  if (isLoading) return <div>Loading...</div>
-
-  if (error) return <div>Error: {error.message}</div>
+  const columns: ColumnDef<Membership>[] = [
+    {
+      accessorKey: "membershipName",
+      header: "Membership Type"
+    },
+    {
+      accessorKey: "membershipLength",
+      header: "Membership Length"
+    },
+    {
+      accessorKey: "membershipFee",
+      header: "Membership Fee"
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <DropDownMenuAction
+            editItem={() => {
+              setMembershipId(row.original.membershipId)
+              setEditDialogOpen(true)
+              form.setValue('membershipName', row.original.membershipName)
+              form.setValue('membershipLength', row.original.membershipLength)
+              form.setValue('membershipFee', row.original.membershipFee)
+            }}
+            deleteItem={async () => {
+              await deleteMembershipMutation.mutateAsync(row.original.membershipId)
+              toast.success("Member deleted successfully")
+            }}
+          />
+        )
+      }
+    }
+  ]
 
   return (
     <>
-      <Table className="border-2 border-gray-200 rounded-md">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Membership Type</TableHead>
-            <TableHead>Membership Length</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {
-            data && data.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center py-4">No membership found</TableCell>
-              </TableRow>
-            ) : (
-              data?.map((membership) => (
-                <TableRow key={membership.membershipId}>
-                  <TableCell>{membership.membershipName}</TableCell>
-                  <TableCell>{membership.membershipLength}</TableCell>
-                  <TableCell>
-                    <DropDownMenuAction
-                      editItem={() => {
-                        setMembershipId(membership.membershipId)
-                        setEditDialogOpen(true)
-                        form.setValue('membershipName', membership.membershipName)
-                        form.setValue('membershipLength', membership.membershipLength)
-                      }}
-                      deleteItem={async () => {
-                        await deleteMembershipMutation.mutateAsync(membership.membershipId)
-                        toast.success("Membership deleted successfully")
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            )
-          }
-        </TableBody>
-      </Table>
+      <DataTable columns={columns} data={memberships ?? []} />
       <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -134,6 +126,21 @@ export default function MembershipsTableList() {
                       <FormLabel>Membership Length</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="Enter membership length"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="membershipFee"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Membership Fee</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Enter membership cost"
                           {...field}
                         />
                       </FormControl>

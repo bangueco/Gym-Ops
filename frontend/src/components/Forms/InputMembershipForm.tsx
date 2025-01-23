@@ -29,6 +29,7 @@ export default function InputMembershipForm() {
     defaultValues: {
       membershipName: "",
       membershipLength: 0,
+      membershipFee: 0,
       createdBy: authQuery.data?.user.userId
     },
   })
