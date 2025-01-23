@@ -14,6 +14,34 @@ services:
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     networks:
       - default
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://root:admin@database:5432/dev-db?schema=public
+      - ACCESS_TOKEN_KEY=GktqHDMGoPRhBHKBVjS4u1kNP2B53cPJKpYwY2QofYg=
+      - REFRESH_TOKEN_KEY=nI/gfF+Jf9Z1amrLLNPVlYxwol499FbzVw12a6BSMBY=
+    depends_on:
+      - database
+    networks:
+      - default
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    networks:
+      - default
 
 volumes:
   postgres_data:
