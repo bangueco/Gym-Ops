@@ -27,7 +27,11 @@ function DashboardPage() {
         </div>
         <div className="p-3 border-primary border-2 rounded-md w-60">
           <h1 className="text-md font-extrabold">ACTIVE MEMBERSHIPS</h1>
-          <p>{membershipQuery.data?.reduce((count, membership) => count + membership.members.length, 0)}</p>
+          <p>
+            {
+              membershipQuery.data ? membershipQuery.data?.reduce((count, membership) => count + (membership.members?.length ?? 0), 0) : 0
+            }
+          </p>
         </div>
         <div className="p-3 border-primary border-2 rounded-md w-60">
           <h1 className="text-md font-extrabold">TOTAL REVENUE</h1>

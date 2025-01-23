@@ -22,7 +22,7 @@ export type Membership = {
   membershipName: string
   membershipLength: number
   createdBy: number
-  members: Member[]
+  members?: Member[]
 }
 
 export type AuthenticationResponse = {
