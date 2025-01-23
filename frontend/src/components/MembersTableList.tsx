@@ -1,4 +1,4 @@
-import { useDeleteMemberMutation, useMemberQuery, useUpdateMemberMutation } from "@/api/member-query"
+import { useDeleteMemberMutation, useUpdateMemberMutation } from "@/api/member-query"
 import { useMembershipQuery } from "@/api/membership-query"
 import DropDownMenuAction from "./DropDownMenuAction"
 import toast from "react-hot-toast"
@@ -19,14 +19,17 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Member } from "@/types"
 import { DataTable } from "./ui/data-table"
 
-export default function MembersTableList() {
+type MembersTableListProps = {
+  members: Member[] | undefined
+}
+
+export default function MembersTableList({ members }: MembersTableListProps) {
 
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [memberId, setMemberId] = useState<number>(0)
-  const [page, setPage] = useState<number>(1)
 
   const authQuery = useAuthQuery()
-  const memberQuery = useMemberQuery(authQuery.data?.user.userId, page, 10)
+  // const memberQuery = useMemberQuery(authQuery.data?.user.userId, page, 10)
   const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
   const updateMemberMutation = useUpdateMemberMutation()
   const deleteMemberMutation = useDeleteMemberMutation()
@@ -136,25 +139,7 @@ export default function MembersTableList() {
 
   return (
     <div>
-      <DataTable columns={columns} data={memberQuery.data?.members ?? []} />
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPage(page + 1)}
-          disabled={memberQuery.data?.hasNextPage === false}
-        >
-          Next
-        </Button>
-      </div>
+      <DataTable columns={columns} data={members ?? []} />
       <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent>
           <DialogHeader>

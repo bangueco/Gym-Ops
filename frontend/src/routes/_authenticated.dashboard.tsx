@@ -1,7 +1,9 @@
 import { useAuthQuery } from '@/api/auth-query'
-import { useMemberQuery } from '@/api/member-query'
+import { useRecentMemberQuery } from '@/api/member-query'
 import { useMembershipQuery } from '@/api/membership-query'
-import RecentMembersTableList from '@/components/RecentMembersTableList'
+import MembersTableList from '@/components/MembersTableList'
+import { Button } from '@/components/ui/button'
+import useNavigateTablePage from '@/hooks/useNavigateTablePage'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/dashboard')({
@@ -10,8 +12,9 @@ export const Route = createFileRoute('/_authenticated/dashboard')({
 
 function DashboardPage() {
 
+  const { page, onPressPreviousPage, onPressNextPage } = useNavigateTablePage();
   const authQuery = useAuthQuery()
-  const memberQuery = useMemberQuery(authQuery.data?.user.userId)
+  const memberQuery = useRecentMemberQuery(authQuery.data?.user.userId, page, 3)
   const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
 
   return (
@@ -33,7 +36,25 @@ function DashboardPage() {
       </div>
       <div className="mt-12">
         <h1>Recent members</h1>
-        <RecentMembersTableList />
+        <MembersTableList members={memberQuery.data?.members} />
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onPressPreviousPage}
+            disabled={page === 1}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onPressNextPage}
+            disabled={memberQuery.data?.hasNextPage === false}
+          >
+            Next
+          </Button>
+        </div>
       </div>
       <div className="mt-12">
         <h1>Expiring memberships</h1>
