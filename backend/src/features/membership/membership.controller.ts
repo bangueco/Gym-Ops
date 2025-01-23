@@ -35,9 +35,9 @@ const createMembership = async (request: Request, response: Response, next: Next
 const updateMembership = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { membershipId } = request.params;
-    const { membershipName, membershipLength, createdBy } = request.body;
+    const { membershipName, membershipLength, createdBy, membershipFee } = request.body;
 
-    const membership = await membershipService.updateMembership(parseInt(membershipId), { membershipName, membershipLength, createdBy });
+    const membership = await membershipService.updateMembership(parseInt(membershipId), { membershipName, membershipLength, createdBy, membershipFee });
     response.status(httpStatusCode.OK).json({message: "Membership updated successfully", membership});
   } catch (error) {
     next(error);
