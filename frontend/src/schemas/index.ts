@@ -71,7 +71,7 @@ export const inputMembershipSchema = z.object({
   membershipLength: z.coerce.number()
     .min(1, { message: "Membership length must be at least 1 day." }),
 
-  membershipFee: z.number()
+  membershipFee: z.coerce.number()
     .min(1, { message: "Membership fee must be at least 1." }),
 
   createdBy: z.number()
