@@ -21,7 +21,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
     environment:
       - DATABASE_URL=postgresql://root:admin@database:5432/dev-db?schema=public
       - ACCESS_TOKEN_KEY=GktqHDMGoPRhBHKBVjS4u1kNP2B53cPJKpYwY2QofYg=
@@ -37,7 +37,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./frontend:/app
+      - ./frontend:/app/frontend
     depends_on:
       - backend
     networks:

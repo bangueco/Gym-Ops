@@ -7,7 +7,7 @@
     "install:yarn": "npm install -g yarn",
     "init:frontend": "cd frontend && yarn install",
     "init:backend": "cd backend && yarn install",
-    "init": "yarn install:yarn && yarn init:frontend && yarn init:backend"
+    "init": "npm run install:yarn && yarn run init:frontend && yarn run init:backend"
   },
   "repository": {
     "type": "git",

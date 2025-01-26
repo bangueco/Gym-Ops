@@ -1,10 +1,10 @@
 FROM node:lts
 
-WORKDIR /app
+WORKDIR /app/frontend
 
 COPY package.json yarn.lock ./
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
