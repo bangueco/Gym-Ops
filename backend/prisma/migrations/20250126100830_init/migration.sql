@@ -29,6 +29,7 @@ CREATE TABLE "Membership" (
     "membershipId" SERIAL NOT NULL,
     "membershipName" TEXT NOT NULL,
     "membershipLength" INTEGER NOT NULL,
+    "membershipFee" INTEGER NOT NULL DEFAULT 0,
     "createdBy" INTEGER NOT NULL,
 
     CONSTRAINT "Membership_pkey" PRIMARY KEY ("membershipId")
