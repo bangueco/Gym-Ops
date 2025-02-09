@@ -31,7 +31,7 @@ export default function InputMemberForm() {
 
   const authQuery = useAuthQuery()
   const addMemberMutation = useAddMemberMutation()
-  const { data, isLoading, isError } = useMembershipQuery(authQuery.data?.user.userId)
+  const { data, isLoading, isError } = useMembershipQuery(authQuery.data?.user.userId, undefined, undefined)
 
   const form = useForm<z.infer<typeof inputMemberSchema>>({
     resolver: zodResolver(inputMemberSchema),
@@ -144,7 +144,7 @@ export default function InputMemberForm() {
                         Inactive
                       </SelectItem>
                       {
-                        data?.map((membership) => (
+                        data?.memberships.map((membership) => (
                           <SelectItem key={membership.membershipId} value={membership.membershipId.toString()}>
                             {membership.membershipName}
                           </SelectItem>

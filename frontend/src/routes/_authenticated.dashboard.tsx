@@ -15,7 +15,7 @@ function DashboardPage() {
   const { page, onPressPreviousPage, onPressNextPage } = useNavigateTablePage();
   const authQuery = useAuthQuery()
   const memberQuery = useRecentMemberQuery(authQuery.data?.user.userId, page, 3)
-  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
+  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId, undefined, undefined)
 
   return (
     <div>
@@ -29,7 +29,7 @@ function DashboardPage() {
           <h1 className="text-md font-extrabold">ACTIVE MEMBERSHIPS</h1>
           <p>
             {
-              membershipQuery.data ? membershipQuery.data?.reduce((count, membership) => count + (membership.members?.length ?? 0), 0) : 0
+              membershipQuery.data ? membershipQuery.data.memberships.reduce((count, membership) => count + (membership.members?.length ?? 0), 0) : 0
             }
           </p>
         </div>

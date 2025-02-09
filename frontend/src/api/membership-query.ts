@@ -1,17 +1,17 @@
 import authAxios from "@/lib/axios";
 import { InputMembershipSchema } from "@/schemas";
-import { Membership, MembershipResponse } from "@/types";
+import { Membership, MembershipResponse, MembershipsResponse } from "@/types";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-function membershipQueryOptions(createdBy: number | undefined) {
+function membershipQueryOptions(createdBy: number | undefined, page: number | undefined, pageSize: number | undefined) {
   return queryOptions({
     queryKey: ["memberships"],
-    queryFn: async () => (await authAxios.get(`/memberships?createdBy=${createdBy}`)).data as Membership[] | null,
+    queryFn: async () => (await authAxios.get(`/memberships?createdBy=${createdBy}&page=${page}&pageSize=${pageSize}`)).data as MembershipsResponse | null,
   })
 }
 
-export function useMembershipQuery(createdBy: number | undefined) {
-  return useQuery(membershipQueryOptions(createdBy));
+export function useMembershipQuery(createdBy: number | undefined, page: number | undefined, pageSize: number | undefined) {
+  return useQuery(membershipQueryOptions(createdBy, page, pageSize));
 }
 
 export function useMembershipByIdQuery(membershipId: number) {

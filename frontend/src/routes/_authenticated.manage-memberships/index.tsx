@@ -14,14 +14,16 @@ function RouteComponent() {
 
   const { page, onPressPreviousPage, onPressNextPage } = useNavigateTablePage();
   const authQuery = useAuthQuery()
-  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
+  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId, page, 10)
+
+  console.log(page)
 
   return (
     <div>
       <h1 className="text-4xl mb-6">Manage Membership</h1>
       <InputMembershipForm />
       <h1 className="text-lg mb-6 mt-12">Membership&apos;s List</h1>
-      <MembershipsTableList memberships={membershipQuery.data ?? []} />
+      <MembershipsTableList memberships={membershipQuery.data?.memberships ?? []} />
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
@@ -35,7 +37,7 @@ function RouteComponent() {
           variant="outline"
           size="sm"
           onClick={onPressNextPage}
-        // disabled={memberQuery.data?.hasNextPage === false}
+          disabled={membershipQuery.data?.hasNextPage === false}
         >
           Next
         </Button>

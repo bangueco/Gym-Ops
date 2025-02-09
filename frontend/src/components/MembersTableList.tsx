@@ -30,7 +30,7 @@ export default function MembersTableList({ members }: MembersTableListProps) {
 
   const authQuery = useAuthQuery()
   // const memberQuery = useMemberQuery(authQuery.data?.user.userId, page, 10)
-  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId)
+  const membershipQuery = useMembershipQuery(authQuery.data?.user.userId, undefined, undefined)
   const updateMemberMutation = useUpdateMemberMutation()
   const deleteMemberMutation = useDeleteMemberMutation()
 
@@ -90,7 +90,7 @@ export default function MembersTableList({ members }: MembersTableListProps) {
       accessorKey: "membershipId",
       header: "Membership Status",
       cell: ({ row }) => {
-        const membership = membershipQuery.data?.find(m => m.membershipId === row.getValue("membershipId"))
+        const membership = membershipQuery.data?.memberships?.find(m => m.membershipId === row.getValue("membershipId"))
 
         return <div>{membership?.membershipName ?? "Inactive"}</div>
       }
@@ -231,7 +231,7 @@ export default function MembersTableList({ members }: MembersTableListProps) {
                               Inactive
                             </SelectItem>
                             {
-                              membershipQuery.data?.map((membership) => (
+                              membershipQuery.data?.memberships?.map((membership) => (
                                 <SelectItem key={membership.membershipId} value={membership.membershipId.toString()}>
                                   {membership.membershipName}
                                 </SelectItem>

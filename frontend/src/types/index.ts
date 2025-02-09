@@ -52,3 +52,8 @@ export type MembershipResponse = {
   message: string
   membership: Membership
 }
+
+export type MembershipsResponse = {
+  memberships: Membership[]
+  hasNextPage: boolean
+}
