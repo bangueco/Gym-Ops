@@ -1,8 +1,10 @@
 import prisma from "@lib/prismaClient";
 import { Membership, Prisma } from "@prisma/client";
 
-const getMemberships = async (filter: Prisma.MembershipWhereInput) => {
+const getMemberships = async (filter: Prisma.MembershipWhereInput | undefined, page: number | undefined, pageSize: number | undefined,) => {
   return await prisma.membership.findMany({
+    skip: page && pageSize ? (page - 1) * pageSize : undefined,
+    take: pageSize || undefined,
     where: filter,
     orderBy: {membershipId: "asc"},
     include: {

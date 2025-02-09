@@ -4,9 +4,15 @@ import httpStatusCode from "@lib/utils/httpStatusCode";
 
 const getAllMemberships = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const { createdBy } = request.query;
-    const memberships = await membershipService.getMemberships({createdBy: createdBy ? parseInt(createdBy as string) : undefined});
-    response.status(httpStatusCode.OK).json(memberships);
+    const { createdBy, page, pageSize} = request.query;
+    const memberships = await membershipService.getMemberships({createdBy: createdBy ? parseInt(createdBy as string) : undefined}, page ? parseInt(page as string) : undefined, pageSize ? parseInt(pageSize as string) : undefined);
+    const membershipsSecondPage = await membershipService.getMemberships({createdBy: createdBy ? parseInt(createdBy as string) : undefined}, page ? parseInt(page as string) + 1 : undefined, pageSize ? parseInt(pageSize as string) : undefined);
+
+
+    response.status(httpStatusCode.OK).json({
+      memberships,
+      hasNextPage: membershipsSecondPage.length > 0 ? true : false
+    });
   } catch (error) {
     next(error);
   }
